@@ -1,20 +1,20 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import type { Suggestion, PublicUserProfile } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import type { Suggestion, PublicUserProfile } from "../../../../lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../../../../components/ui/dropdown-menu";
+import { Button } from "../../../../components/ui/button";
 import { ArrowUpDown, Ellipsis, ArrowLeft, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { enGB } from "date-fns/locale";
-import { usePermissions } from "@/context/PermissionContext";
+import { usePermissions } from "../../../../context/PermissionContext";
 import { useRouter } from "next/navigation";
 import { doc, updateDoc, where, orderBy, query, collection, type QueryConstraint } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
+import { useToast } from "../../../../hooks/use-toast";
+import { Badge } from "../../../../components/ui/badge";
 
 type SortKey = "submittedAt" | "importance";
 type SortDirection = "asc" | "desc";

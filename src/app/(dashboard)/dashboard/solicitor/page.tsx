@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type SolicitorDocument, type Property } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type SolicitorDocument, type Property } from "../../../../lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
 import { FileText, Briefcase, Plus, Search, FileEdit, Loader2 } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
+import { Badge } from "../../../../components/ui/badge";
+import { Input } from "../../../../components/ui/input";
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { collection, query, where, orderBy } from "firebase/firestore";

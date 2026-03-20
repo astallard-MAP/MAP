@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useMemo, useCallback } from 'react';
-import type { UserProfile } from '@/lib/types';
+import type { UserProfile } from "../lib/types";
 
 type Role = UserProfile['role'];
 

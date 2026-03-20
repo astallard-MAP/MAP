@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import PublicBrandLogo from "@/components/PublicBrandLogo";
+import PublicBrandLogo from "../../../components/PublicBrandLogo";
 
 export default function PrivacyPolicyPage() {
     const companyDetails = {

@@ -3,15 +3,15 @@
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type Property, type Organisation } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type Property, type Organisation } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,20 +19,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "../../../../components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/button';
+} from "../../../../components/ui/select";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
 import { Eye, ArrowLeft } from 'lucide-react';
 import { query, collection, where } from 'firebase/firestore';
-import { usePermissions } from '@/context/PermissionContext';
+import { usePermissions } from "../../../../context/PermissionContext";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",

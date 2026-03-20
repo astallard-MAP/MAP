@@ -4,13 +4,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { useUser, useAuth } from "@/firebase";
-import { ImpersonationProvider } from "@/context/ImpersonationContext";
-import { PermissionProvider } from "@/context/PermissionContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useUser, useAuth } from "../../firebase";
+import { ImpersonationProvider } from "../../context/ImpersonationContext";
+import { PermissionProvider } from "../../context/PermissionContext";
+import { Skeleton } from "../../components/ui/skeleton";
 import { AlertTriangle, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { Button } from "../../components/ui/button";
+import DashboardLayout from "../../components/layouts/DashboardLayout";
 
 const LoadingSpinner = ({ text }: { text: string }) => (
     <div className="flex items-center justify-center h-screen bg-background">

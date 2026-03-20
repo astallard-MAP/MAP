@@ -3,9 +3,9 @@
 import { useState, useRef, UIEvent } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { useFirestore, useUser } from "@/firebase";
+import { useFirestore, useUser } from "../firebase";
 import { doc, serverTimestamp, writeBatch } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import { CheckCircle2, ChevronDown } from "lucide-react";
 
 const termsVersion = "1.0";

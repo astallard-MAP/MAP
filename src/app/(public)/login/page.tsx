@@ -6,14 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Loader2 } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useAuth } from "@/firebase";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import PublicBrandLogo from "@/components/PublicBrandLogo";
+import { useAuth } from "../../../firebase";
+import { Button } from "../../../components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { useToast } from "../../../hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert";
+import PublicBrandLogo from "../../../components/PublicBrandLogo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

@@ -1,8 +1,8 @@
 'use server';
 
-import { initializeAdminApp } from '@/firebase/server-init';
+import { initializeAdminApp } from "../../firebase/server-init";
 import { getFirestore } from 'firebase-admin/firestore';
-import type { Property, PortalActionResult } from '@/lib/types';
+import type { Property, PortalActionResult } from "../../lib/types";
 
 /**
  * @fileOverview Production Portal Publication Actions.

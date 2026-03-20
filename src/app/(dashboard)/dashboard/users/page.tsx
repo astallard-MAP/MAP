@@ -2,15 +2,15 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type PublicUserProfile, type Organisation } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type PublicUserProfile, type Organisation } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -18,23 +18,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "../../../../components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from "../../../../components/ui/select";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+import { Input } from "../../../../components/ui/input";
 import { Users, ArrowLeft, Search, ShieldAlert, Loader2 } from 'lucide-react';
-import { usePermissions } from '@/context/PermissionContext';
+import { usePermissions } from "../../../../context/PermissionContext";
 import { collection, query, orderBy } from 'firebase/firestore';
 import { useDebounce } from 'use-debounce';
-import { UserRoleEnum } from '@/lib/schemas';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { UserRoleEnum } from "../../../../lib/schemas";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../../components/ui/tooltip";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Active: "default",

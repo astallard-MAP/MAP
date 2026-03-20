@@ -7,7 +7,7 @@
  * - Supports Franagrams (Anagrams) and Word Grids (Sudoku-style word squares).
  */
 
-import { ai } from '@/ai/genkit';
+import { ai } from "../../ai/genkit";
 import { z } from 'zod';
 
 const GameTypeEnum = z.enum(['Franagram', 'WordGrid']);

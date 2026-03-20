@@ -38,8 +38,8 @@ import {
   SidebarInset,
   SidebarGroup,
   SidebarGroupLabel,
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/sidebar";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,21 +47,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import OrganisationLogo from "@/components/OrganisationLogo";
-import { useUser, useFirestore, useAuth, useMemoFirebase, useDoc } from "@/firebase";
-import { TermsAndConditions } from "@/components/TermsAndConditions";
-import { ProfileImageUploadDialog } from "@/components/ProfileImageUploadDialog";
-import { EditUserDialog } from "@/components/EditUserDialog";
-import { UserRoleSwitcher } from "@/components/UserRoleSwitcher";
-import { usePermissions } from "@/context/PermissionContext";
-import { useImpersonation } from "@/context/ImpersonationContext";
-import type { Organisation, UserRole } from "@/lib/types";
+} from "../../components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { useToast } from "../../hooks/use-toast";
+import OrganisationLogo from "../../components/OrganisationLogo";
+import { useUser, useFirestore, useAuth, useMemoFirebase, useDoc } from "../../firebase";
+import { TermsAndConditions } from "../../components/TermsAndConditions";
+import { ProfileImageUploadDialog } from "../../components/ProfileImageUploadDialog";
+import { EditUserDialog } from "../../components/EditUserDialog";
+import { UserRoleSwitcher } from "../../components/UserRoleSwitcher";
+import { usePermissions } from "../../context/PermissionContext";
+import { useImpersonation } from "../../context/ImpersonationContext";
+import type { Organisation, UserRole } from "../../lib/types";
 import { format } from "date-fns";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import ErrorBoundary from "../../components/ErrorBoundary";
+import { TooltipProvider } from "../../components/ui/tooltip";
 
 /**
  * @fileOverview Production Dashboard Layout for MAP261125.

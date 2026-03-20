@@ -8,15 +8,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
 import { Button } from "./ui/button";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Progress } from "./ui/progress";
-import { uploadFile } from "@/firebase/storage";
-import { useToast } from "@/hooks/use-toast";
+import { uploadFile } from "../firebase/storage";
+import { useToast } from "../hooks/use-toast";
 import { Upload, Link as LinkIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 type UrlOrUploadFieldProps = {
   form: any;

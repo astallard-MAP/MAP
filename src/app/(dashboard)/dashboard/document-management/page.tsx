@@ -3,16 +3,16 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type SolicitorDocument } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type SolicitorDocument } from "../../../../lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
 import { FileText, Plus, FileEdit, ArrowLeft, Loader2, Mail, Gavel } from "lucide-react";
 import { collection, query, orderBy, Timestamp } from "firebase/firestore";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../../../../components/ui/badge";
 
 export default function DocumentManagementPage() {
   const router = useRouter();

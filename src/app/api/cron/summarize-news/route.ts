@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { summariseAndSaveNews } from '@/app/actions/server-actions';
+import { summariseAndSaveNews } from "../../../../app/actions/server-actions";
 
 /**
  * @fileOverview Legacy Redirect Endpoint for News Summarisation.

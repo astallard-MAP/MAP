@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "../../../components/ui/card"
 import { 
   PlusCircle, 
   Building, 
@@ -31,11 +31,11 @@ import {
   History,
   Clock
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "../../../components/ui/button"
 import Link from "next/link"
-import { useUser, useCollection, useFirestore, useMemoFirebase, useDoc } from "@/firebase";
-import { AddAgencyDialog } from "@/components/AddAgencyDialog";
-import { Organisation, Property, PublicUserProfile, AuctionEvent, AccessRequest, Suggestion } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase, useDoc } from "../../../firebase";
+import { AddAgencyDialog } from "../../../components/AddAgencyDialog";
+import { Organisation, Property, PublicUserProfile, AuctionEvent, AccessRequest, Suggestion } from "../../../lib/types";
 import {
   Table,
   TableBody,
@@ -43,18 +43,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from "../../../components/ui/table";
+import { Badge } from "../../../components/ui/badge";
 import { where, orderBy, Timestamp, query, collection, doc } from "firebase/firestore";
-import { usePermissions } from "@/context/PermissionContext";
-import { SuggestionBox } from "@/components/SuggestionBox";
-import { summariseAndSaveNews } from "@/app/actions/server-actions";
-import { useToast } from "@/hooks/use-toast";
-import { AuctionNews } from "@/components/AuctionNews";
-import { OFFICIAL_AUCTION_DATES } from "@/lib/constants";
+import { usePermissions } from "../../../context/PermissionContext";
+import { SuggestionBox } from "../../../components/SuggestionBox";
+import { summariseAndSaveNews } from "../../../app/actions/server-actions";
+import { useToast } from "../../../hooks/use-toast";
+import { AuctionNews } from "../../../components/AuctionNews";
+import { OFFICIAL_AUCTION_DATES } from "../../../lib/constants";
 import { isAfter, format } from "date-fns";
-import { AnalogueClock } from "@/components/AnalogueClock";
-import { DailyGameWidget } from "@/components/DailyGameWidget";
+import { AnalogueClock } from "../../../components/AnalogueClock";
+import { DailyGameWidget } from "../../../components/DailyGameWidget";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",

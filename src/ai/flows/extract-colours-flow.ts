@@ -4,7 +4,7 @@
  * UK-EN: Forensic identification of website primary and secondary colours.
  * Locked to vertexai/gemini-2.5-flash.
  */
-import { ai } from '@/ai/genkit';
+import { ai } from "../../ai/genkit";
 import { z } from 'zod';
 
 const ColourInputSchema = z.object({

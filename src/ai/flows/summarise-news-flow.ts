@@ -4,7 +4,7 @@
  * UK-EN: Professional intelligence aggregation for The Auction Department Limited.
  * Locked to vertexai/gemini-2.5-flash.
  */
-import { ai } from '@/ai/genkit';
+import { ai } from "../../ai/genkit";
 import { z } from 'zod';
 
 const NewsSummarisationInputSchema = z.object({

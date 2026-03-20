@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { doc, writeBatch, getDoc } from "firebase/firestore";
-import { useFirestore } from "@/firebase";
-import { useToast } from "@/hooks/use-toast";
+import { useFirestore } from "../firebase";
+import { useToast } from "../hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -22,17 +22,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { TitleEnum, createUserManagementSchema, UserRoleEnum } from "@/lib/schemas";
-import type { UserProfile, Branch, UserRole, UserStatus } from "@/lib/types";
-import { usePermissions } from "@/context/PermissionContext";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MultiSelectCombobox } from "@/components/ui/MultiSelectCombobox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AddressFields } from "@/components/AddressFields";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { TitleEnum, createUserManagementSchema, UserRoleEnum } from "../lib/schemas";
+import type { UserProfile, Branch, UserRole, UserStatus } from "../lib/types";
+import { usePermissions } from "../context/PermissionContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { MultiSelectCombobox } from "../components/ui/MultiSelectCombobox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { AddressFields } from "../components/AddressFields";
+import { ScrollArea } from "../components/ui/scroll-area";
 
 type EditUserDialogProps = {
   isOpen: boolean;

@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,16 +19,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useFirestore } from "@/firebase";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { useFirestore } from "../firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { BranchSchema } from "@/lib/schemas";
-import { AddressFields } from "@/components/AddressFields";
-import { Branch } from "@/lib/types";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "../hooks/use-toast";
+import { BranchSchema } from "../lib/schemas";
+import { AddressFields } from "../components/AddressFields";
+import { Branch } from "../lib/types";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 
 const EditBranchFormSchema = BranchSchema.omit({ deletionRequested: true });
 type EditBranchFormValues = z.infer<typeof EditBranchFormSchema>;

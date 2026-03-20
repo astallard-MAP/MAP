@@ -1,5 +1,5 @@
-import { Toaster } from "@/components/ui/toaster";
-import { FirebaseClientProvider } from "@/firebase";
+import { Toaster } from "../components/ui/toaster";
+import { FirebaseClientProvider } from "../firebase/client-provider";
 import "./globals.css";
 
 export const metadata = {
@@ -30,8 +30,10 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <FirebaseClientProvider>{children}</FirebaseClientProvider>
-        <Toaster />
+        <FirebaseClientProvider>
+          {children}
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );

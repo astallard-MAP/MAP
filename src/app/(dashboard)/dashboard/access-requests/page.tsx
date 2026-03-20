@@ -2,18 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type AccessRequest, type Organisation } from "@/lib/types";
-import { Card } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type AccessRequest, type Organisation } from "../../../../lib/types";
+import { Card } from "../../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
+import { Button } from "../../../../components/ui/button";
 import { ArrowLeft, CheckCircle, XCircle, Send } from "lucide-react";
 import { format } from "date-fns";
 import { enGB } from 'date-fns/locale';
 import { doc, writeBatch, serverTimestamp, collection, updateDoc } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { InviteAgencyOwnerDialog } from "@/components/InviteAgencyOwnerDialog";
+import { useToast } from "../../../../hooks/use-toast";
+import { InviteAgencyOwnerDialog } from "../../../../components/InviteAgencyOwnerDialog";
 
 export default function AccessRequestsPage() {
     const { userProfile, isLoading: userLoading } = useUser();

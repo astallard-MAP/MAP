@@ -2,15 +2,15 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type Property } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type Property } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -18,13 +18,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from "../../../../components/ui/table";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+import { Input } from "../../../../components/ui/input";
 import { Eye, PlusCircle, Pencil, Search, Loader2 } from 'lucide-react';
 import { query, collection, where } from 'firebase/firestore';
-import { usePermissions } from '@/context/PermissionContext';
+import { usePermissions } from "../../../../context/PermissionContext";
 import { useDebounce } from 'use-debounce';
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {

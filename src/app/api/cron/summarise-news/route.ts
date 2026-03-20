@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { summariseAndSaveNews } from '@/app/actions/server-actions';
+import { summariseAndSaveNews } from "../../../../app/actions/server-actions";
 
 /**
  * @fileOverview Definitive Cron Endpoint for News Summarisation.

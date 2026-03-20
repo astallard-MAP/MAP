@@ -5,7 +5,7 @@ import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useUser, useFirestore, useDoc, useMemoFirebase, useCollection } from "@/firebase";
+import { useUser, useFirestore, useDoc, useMemoFirebase, useCollection } from "../../../../firebase";
 import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
 import { 
   PropertyFormSchema, 
@@ -16,21 +16,21 @@ import {
   UtilitySourceEnum, 
   HeatingTypeEnum, 
   ParkingTypeEnum 
-} from "@/lib/schemas";
-import type { Property, Branch, Address } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast";
-import { auctionSelectionNotes } from "@/lib/auction-selection-notes";
-import { usePermissions } from "@/context/PermissionContext";
-import { rewriteFieldAction, researchLocationAction } from "@/app/actions/client-ai-actions";
+} from "../../../../lib/schemas";
+import type { Property, Branch, Address } from "../../../../lib/types";
+import { useToast } from "../../../../hooks/use-toast";
+import { auctionSelectionNotes } from "../../../../lib/auction-selection-notes";
+import { usePermissions } from "../../../../context/PermissionContext";
+import { rewriteFieldAction, researchLocationAction } from "../../../../app/actions/client-ai-actions";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -39,25 +39,25 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { Textarea } from "../../../../components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../../../components/ui/select";
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
-} from "@/components/ui/tabs";
+} from "../../../../components/ui/tabs";
 import {
   TooltipProvider,
-} from "@/components/ui/tooltip";
+} from "../../../../components/ui/tooltip";
 import { 
   Loader2, 
   Plus, 
@@ -80,9 +80,9 @@ import {
   FileCheck
 } from "lucide-react";
 
-import { AddressFields } from "@/components/AddressFields";
-import { UrlOrUploadField } from "@/components/UrlOrUploadField";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { AddressFields } from "../../../../components/AddressFields";
+import { UrlOrUploadField } from "../../../../components/UrlOrUploadField";
+import { RadioGroup, RadioGroupItem } from "../../../../components/ui/radio-group";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -91,8 +91,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "../../../../components/ui/alert-dialog";
+import { Checkbox } from "../../../../components/ui/checkbox";
 
 const emptyAddress: Address = {
     houseNameOrNumber: "",

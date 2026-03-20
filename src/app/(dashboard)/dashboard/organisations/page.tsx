@@ -3,15 +3,15 @@
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type Organisation, type PublicUserProfile } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type Organisation, type PublicUserProfile } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,18 +19,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "../../../../components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/button';
+} from "../../../../components/ui/select";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
 import { Building, ArrowLeft, Settings, Loader2 } from 'lucide-react';
-import { usePermissions } from '@/context/PermissionContext';
+import { usePermissions } from "../../../../context/PermissionContext";
 import { collection } from 'firebase/firestore';
 
 type FilterStatus = "All" | "Active" | "Pending" | "Invited" | "Inactive" | "Archived";

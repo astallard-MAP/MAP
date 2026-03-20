@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useCollection, useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { type SupportMessage, type SupportChat } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useCollection, useUser, useFirestore, useDoc, useMemoFirebase } from "../../firebase";
+import { type SupportMessage, type SupportChat } from "../../lib/types";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import { Send, AlertTriangle } from "lucide-react";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import { ScrollArea, ScrollAreaViewport } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useToast } from "../../hooks/use-toast";
+import { PlaceHolderImages } from "../../lib/placeholder-images";
 import { format } from 'date-fns';
 import { enGB } from 'date-fns/locale';
-import { askFrankAction } from "@/app/actions/client-ai-actions";
-import { usePermissions } from "@/context/PermissionContext";
+import { askFrankAction } from "../../app/actions/client-ai-actions";
+import { usePermissions } from "../../context/PermissionContext";
 
 type ChatWindowProps = {
   chatId: string;

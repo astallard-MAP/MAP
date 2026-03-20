@@ -4,7 +4,7 @@
  * UK-EN: Professional refinement of property descriptions.
  * Locked to vertexai/gemini-2.5-flash.
  */
-import { ai } from '@/ai/genkit';
+import { ai } from "../../ai/genkit";
 import { z } from 'zod';
 
 const RewriteFieldInputSchema = z.object({

@@ -5,7 +5,7 @@
  * Clinicaly implements the regions/{id}/areas/{id}/locations sub-collection model.
  */
 
-import { initializeAdminApp } from '@/firebase/server-init';
+import { initializeAdminApp } from "../../firebase/server-init";
 import { getFirestore } from 'firebase-admin/firestore';
 import { type GeoRegion, type GeoArea, type GeoLocation, type GeoDistrict } from './types';
 

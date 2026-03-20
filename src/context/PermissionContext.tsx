@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useImpersonation } from './ImpersonationContext';
-import type { UserRole, UserProfile } from '@/lib/types';
-import { GLOBAL_ADMIN_UIDS } from '@/lib/constants';
+import type { UserRole, UserProfile } from "../lib/types";
+import { GLOBAL_ADMIN_UIDS } from "../lib/constants";
 
 interface PermissionContextType {
   currentUserProfile: UserProfile | null;

@@ -2,18 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type SupportChat } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type SupportChat } from "../../../../lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
 import { ArrowLeft, Phone, Mail, PlusCircle } from "lucide-react";
-import { ChatList } from "@/components/chat/ChatList";
-import { ChatWindow } from "@/components/chat/ChatWindow";
+import { ChatList } from "../../../../components/chat/ChatList";
+import { ChatWindow } from "../../../../components/chat/ChatWindow";
 import { collection, addDoc, serverTimestamp, where, doc, updateDoc, query, getDocs } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../../../hooks/use-toast";
 import Image from "next/image";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { usePermissions } from "@/context/PermissionContext";
+import { PlaceHolderImages } from "../../../../lib/placeholder-images";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 export default function SupportPage() {
     const { userProfile, loading: userLoading } = useUser();

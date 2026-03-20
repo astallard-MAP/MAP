@@ -7,11 +7,11 @@ import {
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+} from "../components/ui/select";
+import { Label } from "../components/ui/label";
+import { useCollection, useFirestore, useMemoFirebase } from "../firebase";
 import { collection, query, orderBy } from "firebase/firestore";
-import { type GeoRegion, type GeoArea, type GeoLocation, type GeographyHierarchy } from "@/services/geography/types";
+import { type GeoRegion, type GeoArea, type GeoLocation, type GeographyHierarchy } from "../services/geography/types";
 import { MapPin, Loader2 } from "lucide-react";
 
 interface CascadingGeographySelectProps {

@@ -1,8 +1,8 @@
 'use server';
 
-import { initializeAdminApp } from '@/firebase/server-init';
+import { initializeAdminApp } from "../../firebase/server-init";
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { generateDailyGame } from '@/ai/flows/generate-game-flow';
+import { generateDailyGame } from "../../ai/flows/generate-game-flow";
 
 /**
  * Retrieves the daily puzzle for the portal.

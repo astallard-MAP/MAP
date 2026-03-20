@@ -10,14 +10,14 @@ import { collection, writeBatch, doc, query, where, getDocs, serverTimestamp, Ti
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardFooter,
-} from "@/components/ui/card";
+} from "../../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -25,17 +25,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import PublicBrandLogo from "@/components/PublicBrandLogo";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { TitleEnum, AddressSchema } from "@/lib/schemas";
-import { AddressFields } from "@/components/AddressFields";
-import { useFirestore, useAuth } from "@/firebase";
-import type { StaffInvitation, UserProfile, PublicUserProfile } from "@/lib/types";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+} from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
+import PublicBrandLogo from "../../../components/PublicBrandLogo";
+import { useToast } from "../../../hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert";
+import { TitleEnum, AddressSchema } from "../../../lib/schemas";
+import { AddressFields } from "../../../components/AddressFields";
+import { useFirestore, useAuth } from "../../../firebase";
+import type { StaffInvitation, UserProfile, PublicUserProfile } from "../../../lib/types";
+import { Skeleton } from "../../../components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
 const AccessRequestSchema = z.object({
   title: TitleEnum,

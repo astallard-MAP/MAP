@@ -1,9 +1,9 @@
 
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { Search, MapPin, Bell } from "lucide-react";
-import { usePermissions } from "@/context/PermissionContext";
+import { usePermissions } from "../../../../context/PermissionContext";
 import { redirect } from "next/navigation";
 
 export default function BuyerDashboardPage() {

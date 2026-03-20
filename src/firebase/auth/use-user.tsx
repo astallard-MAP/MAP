@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth, useFirestore } from '@/firebase';
+import { useAuth, useFirestore } from "../../firebase";
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
-import type { UserProfile } from '@/lib/types';
+import type { UserProfile } from "../../lib/types";
 
 export interface UserHookResult {
   user: User | null;

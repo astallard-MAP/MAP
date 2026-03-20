@@ -4,7 +4,7 @@
  * Clinicaly configured for server-side execution via Genkit.
  */
 import { ai } from '../genkit';
-import { auctionFaqs } from '@/lib/auction-faqs';
+import { auctionFaqs } from "../../lib/auction-faqs";
 import { z } from 'zod';
 
 const AskFrankInputSchema = z.object({

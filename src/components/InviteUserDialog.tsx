@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,18 +19,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { useFirestore, useDoc, useMemoFirebase } from "../firebase";
 import { doc, serverTimestamp, collection, query, where, getDocs, Timestamp, setDoc } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { TitleEnum, createUserManagementSchema, UserRoleEnum } from "@/lib/schemas";
-import type { Organisation, UserRole, StaffInvitation } from "@/lib/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MultiSelectCombobox } from "@/components/ui/MultiSelectCombobox";
-import { usePermissions } from "@/context/PermissionContext";
-import type { Branch } from "@/lib/types";
+import { useToast } from "../hooks/use-toast";
+import { TitleEnum, createUserManagementSchema, UserRoleEnum } from "../lib/schemas";
+import type { Organisation, UserRole, StaffInvitation } from "../lib/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { MultiSelectCombobox } from "../components/ui/MultiSelectCombobox";
+import { usePermissions } from "../context/PermissionContext";
+import type { Branch } from "../lib/types";
 import { v4 as uuidv4 } from 'uuid';
 import { Loader2 } from "lucide-react";
 

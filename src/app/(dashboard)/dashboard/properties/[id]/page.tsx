@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useDoc, useUser, useFirestore, useMemoFirebase } from "@/firebase";
-import { type Property, type PortalActionResult } from "@/lib/types";
+import { useDoc, useUser, useFirestore, useMemoFirebase } from "../../../../../firebase";
+import { type Property, type PortalActionResult } from "../../../../../lib/types";
 import { useParams, useRouter } from "next/navigation";
 import {
   Card,
@@ -11,15 +11,15 @@ import {
   CardHeader,
   CardTitle,
   CardFooter,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "../../../../../components/ui/card";
+import { Badge } from "../../../../../components/ui/badge";
+import { Button } from "../../../../../components/ui/button";
 import Link from 'next/link';
 import { ArrowLeft, Download, Eye, FileText, Image as ImageIcon, Video, Map, BedDouble, Loader2, ShieldCheck, FileCheck, Globe, ShieldAlert } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../../components/ui/table";
 import { doc } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
-import { publishToRightmove, publishToZoopla, publishToOTM } from "@/app/actions/portal-actions";
+import { useToast } from "../../../../../hooks/use-toast";
+import { publishToRightmove, publishToZoopla, publishToOTM } from "../../../../../app/actions/portal-actions";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",

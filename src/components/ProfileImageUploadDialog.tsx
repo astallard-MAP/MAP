@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { User } from 'firebase/auth';
 import { doc, writeBatch } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
-import { uploadFile } from '@/firebase/storage';
-import { Button } from '@/components/ui/button';
+import { useFirestore } from "../firebase";
+import { uploadFile } from "../firebase/storage";
+import { Button } from "../components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,10 +13,10 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/hooks/use-toast';
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
+import { Progress } from "../components/ui/progress";
+import { useToast } from "../hooks/use-toast";
 import { Upload } from 'lucide-react';
 
 type ProfileImageUploadDialogProps = {

@@ -1,9 +1,9 @@
 'use server';
 
-import { askFrank } from "@/ai/flows/ask-frank-flow";
-import { extractWebsiteColours } from "@/ai/flows/extract-colours-flow";
-import { rewriteField } from "@/ai/flows/rewrite-field-flow";
-import { researchLocation } from "@/ai/flows/research-location-flow";
+import { askFrank } from "../../ai/flows/ask-frank-flow";
+import { extractWebsiteColours } from "../../ai/flows/extract-colours-flow";
+import { rewriteField } from "../../ai/flows/rewrite-field-flow";
+import { researchLocation } from "../../ai/flows/research-location-flow";
 
 /**
  * @fileOverview Production Client AI Action Registry.

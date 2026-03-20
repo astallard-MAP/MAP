@@ -1,16 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
+import { Input } from "../../../../components/ui/input";
+import { Badge } from "../../../../components/ui/badge";
 import { History, Search, ArrowLeft, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../components/ui/button";
 import { useRouter } from "next/navigation";
-import { AUCTION_HISTORY } from "@/lib/auction-history";
+import { AUCTION_HISTORY } from "../../../../lib/auction-history";
 import { useDebounce } from "use-debounce";
-import { cn } from "@/lib/utils";
+import { cn } from "../../../../lib/utils";
 
 /**
  * @fileOverview Production Auction History Ledger for MAP261125.

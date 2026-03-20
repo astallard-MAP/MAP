@@ -5,9 +5,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { useAuth } from "@/firebase";
+import { useAuth } from "../../../firebase";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,12 +15,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import PublicBrandLogo from "@/components/PublicBrandLogo";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+} from "../../../components/ui/card";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import PublicBrandLogo from "../../../components/PublicBrandLogo";
+import { useToast } from "../../../hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert";
 
 const enforceUkSpelling = (message: string): string => {
   if (!message) return '';

@@ -1,22 +1,22 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useUser } from "@/firebase";
-import { type SupportMessage } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useUser } from "../../firebase";
+import { type SupportMessage } from "../../lib/types";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import { Send } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ScrollArea, ScrollAreaViewport } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
+import { cn } from "../../lib/utils";
+import { ScrollArea, ScrollAreaViewport } from "../../components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { useToast } from "../../hooks/use-toast";
 import { v4 as uuidv4 } from 'uuid';
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { PlaceHolderImages } from "../../lib/placeholder-images";
 import { format } from 'date-fns';
 import { enGB } from 'date-fns/locale';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "../../components/ui/skeleton";
 import { Timestamp } from "firebase/firestore";
-import { askFrankAction } from "@/app/actions/client-ai-actions";
+import { askFrankAction } from "../../app/actions/client-ai-actions";
 
 type ChatMessagesProps = {
     messages: SupportMessage[];

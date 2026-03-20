@@ -3,15 +3,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type AppNotification, type PublicUserProfile } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type AppNotification, type PublicUserProfile } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,15 +19,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from '@/components/ui/button';
+} from "../../../../components/ui/table";
+import { Button } from "../../../../components/ui/button";
 import { Eye, ArrowLeft, Trash2, Mail } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 import { formatDistanceToNow } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 import { doc, updateDoc, deleteDoc, collection } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { errorEmitter } from "../../../../firebase/error-emitter";
+import { FirestorePermissionError } from "../../../../firebase/errors";
 
 export default function NotificationsPage() {
     const { userProfile, isLoading: userLoading } = useUser();

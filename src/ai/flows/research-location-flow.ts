@@ -4,7 +4,7 @@
  * UK-EN: Generates descriptive location paragraphs excluding demographics.
  * Locked to vertexai/gemini-2.5-flash.
  */
-import { ai } from '@/ai/genkit';
+import { ai } from "../../ai/genkit";
 import { z } from 'zod';
 
 const ResearchLocationInputSchema = z.object({

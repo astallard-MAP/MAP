@@ -2,15 +2,15 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type AppNotification, type PublicUserProfile } from "@/lib/types";
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type AppNotification, type PublicUserProfile } from "../../../../lib/types";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -18,8 +18,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from '@/components/ui/button';
+} from "../../../../components/ui/table";
+import { Button } from "../../../../components/ui/button";
 import { ArrowLeft, FileSearch, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import { enGB } from 'date-fns/locale';

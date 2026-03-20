@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { useCollection, useUser, useFirestore, useMemoFirebase } from '@/firebase';
-import { type AuctionEvent } from '@/lib/types';
-import { usePermissions } from '@/context/PermissionContext';
+import { useCollection, useUser, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type AuctionEvent } from "../../../../lib/types";
+import { usePermissions } from "../../../../context/PermissionContext";
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
 import { Calendar as CalendarIcon, PlusCircle, ChevronLeft, ChevronRight, Loader2, Info, Timer, Bookmark } from 'lucide-react';
-import { AddAuctionEventDialog } from '@/components/AddAuctionEventDialog';
-import { Calendar } from '@/components/ui/calendar';
+import { AddAuctionEventDialog } from "../../../../components/AddAuctionEventDialog";
+import { Calendar } from "../../../../components/ui/calendar";
 import { addMonths, subMonths, startOfMonth, isSameMonth, format, isAfter } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "../../../../components/ui/badge";
 import { collection } from "firebase/firestore";
-import { auctionSelectionNotes } from '@/lib/auction-selection-notes';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { OFFICIAL_AUCTION_DATES } from '@/lib/constants';
+import { auctionSelectionNotes } from "../../../../lib/auction-selection-notes";
+import { ScrollArea } from "../../../../components/ui/scroll-area";
+import { OFFICIAL_AUCTION_DATES } from "../../../../lib/constants";
 
 export default function AuctionCalendarPage() {
   const { userProfile, isLoading: userLoading } = useUser();

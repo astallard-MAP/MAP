@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useFirestore } from "@/firebase";
+import { useFirestore } from "../firebase";
 import { writeBatch, doc, serverTimestamp, collection, Timestamp } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -22,13 +22,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { TitleEnum } from "@/lib/schemas";
-import { Organisation, UserProfile, StaffInvitation } from "@/lib/types";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { TitleEnum } from "../lib/schemas";
+import { Organisation, UserProfile, StaffInvitation } from "../lib/types";
 import { v4 as uuidv4 } from "uuid";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Loader2 } from "lucide-react";
 
 const InviteOwnerSchema = z.object({

@@ -6,15 +6,15 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+} from "../../../../components/ui/accordion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
 import { GraduationCap } from "lucide-react";
-import { AuctionAcademyChatbot } from "@/components/chat/AuctionAcademyChatbot";
-import { auctionFaqs } from "@/lib/auction-faqs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AuctionAcademyChatbot } from "../../../../components/chat/AuctionAcademyChatbot";
+import { auctionFaqs } from "../../../../lib/auction-faqs";
+import { Alert, AlertDescription, AlertTitle } from "../../../../components/ui/alert";
 import Image from "next/image";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { AuctionNews } from "@/components/AuctionNews";
+import { PlaceHolderImages } from "../../../../lib/placeholder-images";
+import { AuctionNews } from "../../../../components/AuctionNews";
 
 export default function AuctionAcademyPage() {
   

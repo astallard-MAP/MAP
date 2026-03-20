@@ -1,8 +1,8 @@
 "use client";
 
 import { UserCircle, ShieldAlert, LogOut } from 'lucide-react';
-import { useImpersonation } from '@/context/ImpersonationContext';
-import { Button } from '@/components/ui/button';
+import { useImpersonation } from "../context/ImpersonationContext";
+import { Button } from "../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,10 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { UserProfile } from '@/lib/types';
-import { UserRoleEnum } from '@/lib/schemas';
-import { cn } from '@/lib/utils';
+} from "../components/ui/dropdown-menu";
+import type { UserProfile } from "../lib/types";
+import { UserRoleEnum } from "../lib/schemas";
+import { cn } from "../lib/utils";
 
 type Role = UserProfile['role'];
 

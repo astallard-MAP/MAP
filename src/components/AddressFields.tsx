@@ -10,8 +10,8 @@ import {
   FormControl,
   FormMessage,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
 import { Button } from "./ui/button";
 import {
   Select,
@@ -19,10 +19,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui";
+} from "../components/ui";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { useToast } from "../hooks/use-toast";
+import { cn } from "../lib/utils";
 
 type ApiAddressData = {
     line_1: string;

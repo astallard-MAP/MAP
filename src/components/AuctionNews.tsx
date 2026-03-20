@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
 import { Rss, ArrowRight, Loader2, Clock } from 'lucide-react';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import type { NewsArticle } from '@/lib/types';
+import { useCollection, useFirestore, useMemoFirebase } from "../firebase";
+import type { NewsArticle } from "../lib/types";
 import { format } from 'date-fns';
 import { Timestamp, collection } from 'firebase/firestore';
 import {
@@ -13,8 +13,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from "../components/ui/accordion";
+import { ScrollArea } from "../components/ui/scroll-area";
 import { useMemo } from 'react';
 
 interface AuctionNewsProps {

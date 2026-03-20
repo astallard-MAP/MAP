@@ -1,13 +1,13 @@
 'use server';
 
-import { summariseNewsFlow } from "@/ai/flows/summarise-news-flow";
-import rssFeeds from '@/lib/rss-feeds.json';
+import { summariseNewsFlow } from "../../ai/flows/summarise-news-flow";
+import rssFeeds from "../../lib/rss-feeds.json";
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { initializeAdminApp } from '@/firebase/server-init';
+import { initializeAdminApp } from "../../firebase/server-init";
 import { getAuth } from "firebase-admin/auth";
 // @ts-ignore
 import mailchimp from '@mailchimp/mailchimp_marketing';
-import { type SolicitorRanking } from "@/lib/types";
+import { type SolicitorRanking } from "../../lib/types";
 
 /**
  * Automates news aggregation and AI summarisation.

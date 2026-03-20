@@ -7,14 +7,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+} from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
+import { useToast } from "../../../../hooks/use-toast";
 import { ArrowLeft, Loader2, Rss, MailCheck, Trash2, ShieldAlert, Gamepad2, BrainCircuit } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { usePermissions } from "@/context/PermissionContext";
-import { summariseAndSaveNews, syncUsersToMailchimp, wipePortalData } from "@/app/actions/server-actions";
-import { getDailyGame } from "@/app/actions/game-actions";
+import { usePermissions } from "../../../../context/PermissionContext";
+import { summariseAndSaveNews, syncUsersToMailchimp, wipePortalData } from "../../../../app/actions/server-actions";
+import { getDailyGame } from "../../../../app/actions/game-actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,8 +25,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+} from "../../../../components/ui/alert-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
 
 /**
  * @fileOverview Production Admin Tools Desk.

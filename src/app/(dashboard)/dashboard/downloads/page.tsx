@@ -2,16 +2,16 @@
 "use client";
 
 import { useMemo, useState, useEffect } from 'react';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { type Property } from "@/lib/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from '@/components/ui/button';
+import { useUser, useCollection, useFirestore, useMemoFirebase } from "../../../../firebase";
+import { type Property } from "../../../../lib/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import { Checkbox } from "../../../../components/ui/checkbox";
+import { Button } from "../../../../components/ui/button";
 import { Download, FileJson, FileText, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { collection, query, where } from 'firebase/firestore';
-import { usePermissions } from '@/context/PermissionContext';
+import { usePermissions } from "../../../../context/PermissionContext";
 import { useRouter } from 'next/navigation';
 
 type FilterStatus = "All" | "Published" | "Available" | "Sold" | "Submitted";

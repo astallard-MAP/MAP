@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 import Image from "next/image";
-import { useUser, useDoc, useFirestore, useMemoFirebase } from "@/firebase";
-import { Organisation } from "@/lib/types";
+import { useUser, useDoc, useFirestore, useMemoFirebase } from "../firebase";
+import { Organisation } from "../lib/types";
 import PublicBrandLogo from "./PublicBrandLogo";
 import { doc } from "firebase/firestore";
 

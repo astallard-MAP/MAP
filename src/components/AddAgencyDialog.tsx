@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,16 +19,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useFirestore } from "@/firebase";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { useFirestore } from "../firebase";
 import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
-import { type Organisation } from "@/lib/types";
-import { AddressFields } from "@/components/AddressFields";
-import { BusinessTypeEnum, AddressSchema } from "@/lib/schemas";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { type Organisation } from "../lib/types";
+import { AddressFields } from "../components/AddressFields";
+import { BusinessTypeEnum, AddressSchema } from "../lib/schemas";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { useToast } from "../hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 const AgencyDetailsSchema = z.object({

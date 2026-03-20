@@ -1,8 +1,8 @@
 "use client";
 
-import { useCollection, useUser, useFirestore, useMemoFirebase } from "@/firebase";
-import { type SupportChat } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { useCollection, useUser, useFirestore, useMemoFirebase } from "../../firebase";
+import { type SupportChat } from "../../lib/types";
+import { cn } from "../../lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { collection } from "firebase/firestore";
 

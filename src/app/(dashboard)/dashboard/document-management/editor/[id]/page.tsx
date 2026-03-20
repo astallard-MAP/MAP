@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
-import { type SolicitorDocument } from "@/lib/types";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DocumentEditor } from "@/components/editor/DocumentEditor";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "../../../../../../firebase";
+import { type SolicitorDocument } from "../../../../../../lib/types";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../../../../../../components/ui/card";
+import { Button } from "../../../../../../components/ui/button";
+import { Input } from "../../../../../../components/ui/input";
+import { Label } from "../../../../../../components/ui/label";
+import { DocumentEditor } from "../../../../../../components/editor/DocumentEditor";
 import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../../../../../hooks/use-toast";
 import { ArrowLeft, Save, FileCheck, Loader2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../../../../../../components/ui/badge";
 
 export default function DocumentTemplateEditorPage() {
   const { id } = useParams();
