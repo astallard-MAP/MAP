@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "company-logo-placeholder",
+      "description": "Placeholder for a company logo upload in forms.",
+      "imageUrl": "https://images.unsplash.com/photo-1760138270903-d95903188730?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsb2dvJTIwY29tcGFueXxlbnwwfHx8fDE3NjQwNzQxOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "logo company"
+    },
+    {
+      "id": "user-avatar-placeholder",
+      "description": "Placeholder for a user's avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1569913486515-b74bf7751574?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBhdmF0YXJ8ZW58MHx8fHwxNzY0MTExMDM1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person avatar"
+    },
+    {
+      "id": "frank-tadsworth-bids-avatar",
+      "description": "Official avatar for the AI mascot, Frank Tadsworth-Bids.",
+      "imageUrl": "/frank-tadsworth-bids.png",
+      "imageHint": "mascot character"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "name": "My Auction Portal",
+  "description": "A portal for Estate Agents to submit properties for sale by auction.",
+  "requestFramePermissions": []
+}

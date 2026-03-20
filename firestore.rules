@@ -1,0 +1,72 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isGlobalAdmin() {
+      return isSignedIn() && (
+        request.auth.uid == "YEMX9fZTcZRf0gzaP9WHIUIsaXk1" || 
+        request.auth.uid == "r4q6hhyH9Qg9Ff2uCJQlOYUa1xM2" || 
+        request.auth.uid == "XVtQ7DdJCLVRuPnWhdpshJ0wxwz2" || 
+        request.auth.uid == "W8MAMYxxIBhrOWAz6tcog9DCLUD2" ||
+        (request.auth.token.email == "AStallard65@gmail.com" && request.auth.token.email_verified == true)
+      );
+    }
+    
+    // GLOBAL ADMIN OVERRIDE: Absolute Production Authority
+    match /{allPaths=**} {
+      allow read, write: if isGlobalAdmin();
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // PUBLIC ACCESS (DMZ): Required for onboarding and public search
+    match /publicUsers/{userId} {
+      allow read: if true;
+      allow write: if isGlobalAdmin();
+    }
+
+    match /geography/{allPaths=**} {
+      allow read: if true;
+    }
+
+    // USER PROFILE RULES
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && (request.auth.uid == userId || isGlobalAdmin());
+    }
+
+    // ORGANISATION RULES: Regional Isolation
+    match /organisations/{orgId} {
+      allow read: if isSignedIn() && (
+        isGlobalAdmin() || 
+        getUserData().organisationId == orgId || 
+        getUserData().regionId == resource.data.regionId
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (isGlobalAdmin() || getUserData().organisationId == orgId);
+    }
+
+    // PROPERTY RULES: Production Audit & Audit Trail
+    match /properties/{propId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (
+        isGlobalAdmin() || 
+        getUserData().organisationId == resource.data.organisationId
+      );
+    }
+
+    // SYSTEM MODULES
+    match /newsArticles/{docId} { allow read: if true; }
+    match /auctionEvents/{docId} { allow read: if true; }
+    match /supportChats/{chatId} {
+      allow read, write: if isSignedIn() && (request.auth.uid == resource.data.userId || isGlobalAdmin());
+      match /messages/{msgId} { allow read, write: if isSignedIn(); }
+    }
+  }
+}

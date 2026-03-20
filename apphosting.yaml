@@ -1,0 +1,77 @@
+# My Auction Portal - Definitive Production Configuration
+# INFRASTRUCTURE ALIGNMENT: Pinned to us-central1
+# BUSINESS LOGIC: Europe/London (GMT/BST)
+runtime: nodejs22
+location: us-central1
+
+runConfig:
+  maxInstances: 10
+
+env:
+  - variable: TZ
+    value: Europe/London
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: FIREBASE_CONFIG
+    secret: FIREBASE_CONFIG
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: SMTP_HOST
+    secret: SMTP_HOST
+    availability:
+      - RUNTIME
+
+  - variable: SMTP_PORT
+    secret: SMTP_PORT
+    availability:
+      - RUNTIME
+
+  - variable: SMTP_USER
+    secret: SMTP_USER
+    availability:
+      - RUNTIME
+
+  - variable: SMTP_PASS
+    secret: SMTP_PASS
+    availability:
+      - RUNTIME
+
+  - variable: GETADDRESS_IO_API_KEY
+    secret: GETADDRESS_IO_API_KEY
+    availability:
+      - RUNTIME
+
+  - variable: MAILCHIMP_API_KEY
+    secret: MAILCHIMP_API_KEY
+    availability:
+      - RUNTIME
+
+  - variable: MAILCHIMP_SERVER_PREFIX
+    secret: MAILCHIMP_SERVER_PREFIX
+    availability:
+      - RUNTIME
+
+  - variable: MAILCHIMP_LIST_ID
+    secret: MAILCHIMP_LIST_ID
+    availability:
+      - RUNTIME
+
+scheduledJobs:
+  - id: summarise-news-morning
+    schedule: "0 8 * * *"
+    timeZone: "Europe/London"
+    httpTarget:
+      uri: "/api/cron/summarise-news"
+      oidcToken:
+        serviceAccount: firebase-app-hosting-compute@PROJECT_ID.iam.gserviceaccount.com
+  - id: summarise-news-afternoon
+    schedule: "0 14 * * *"
+    timeZone: "Europe/London"
+    httpTarget:
+      uri: "/api/cron/summarise-news"
+      oidcToken:
+        serviceAccount: firebase-app-hosting-compute@PROJECT_ID.iam.gserviceaccount.com

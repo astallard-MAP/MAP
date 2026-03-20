@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user account information and preferences.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string" },
+        "status": { "type": "string" },
+        "firstName": { "type": "string" },
+        "surname": { "type": "string" },
+        "organisationId": { "type": "string" },
+        "branchIds": { "type": "array", "items": { "type": "string" } },
+        "termsAccepted": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "status"]
+    },
+    "Organisation": {
+      "title": "Organisation",
+      "description": "Represents a business entity (e.g., Estate Agency).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "businessType": { "type": "string" },
+        "status": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "generalContactEmail": { "type": "string", "format": "email" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "status", "ownerUid"]
+    },
+    "Property": {
+      "title": "Property",
+      "description": "A property listing for auction.",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "headline": { "type": "string" },
+        "propertyType": { "type": "string" },
+        "tenure": { "type": "string" },
+        "organisationId": { "type": "string" },
+        "submittedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["status", "headline", "organisationId", "submittedBy"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    },
+    "/organisations/{orgId}": {
+      "schema": "Organisation",
+      "description": "Organisation documents."
+    },
+    "/properties/{propId}": {
+      "schema": "Property",
+      "description": "Property listing documents."
+    }
+  }
+}

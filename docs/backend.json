@@ -1,0 +1,68 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Comprehensive private user profile with management hierarchy telemetry.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string" },
+        "regionId": { "type": "string", "description": "Level 1: ONS Region" },
+        "areaId": { "type": "string", "description": "Level 2: ONS County" },
+        "locationId": { "type": "string", "description": "Level 3: ONS City/Borough" },
+        "status": { "type": "string" },
+        "organisationId": { "type": "string" },
+        "branchIds": { "type": "array", "items": { "type": "string" } },
+        "termsAccepted": { "type": "boolean" },
+        "deletionRequested": { "type": "boolean" },
+        "rankingPoints": { "type": "number" }
+      }
+    },
+    "Organisation": {
+      "title": "Organisation",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "status": { "type": "string" },
+        "businessType": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "regionId": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "generalContactEmail": { "type": "string" }
+      }
+    },
+    "Property": {
+      "title": "Property",
+      "description": "Production lot with 2026 Material Information compliance.",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "organisationId": { "type": "string" },
+        "submittedBy": { "type": "string" },
+        "auctionType": { "type": "string" },
+        "reservePrice": { "type": "number" },
+        "guidePrice": { "type": "number" },
+        "compliance": { "type": "object" },
+        "publishedTo": { "type": "object" }
+      }
+    },
+    "GeoRegion": { "title": "GeoRegion", "type": "object", "properties": { "name": { "type": "string" } } },
+    "GeoArea": { "title": "GeoArea", "type": "object", "properties": { "name": { "type": "string" }, "regionId": { "type": "string" } } },
+    "GeoLocation": { "title": "GeoLocation", "type": "object", "properties": { "name": { "type": "string" }, "areaId": { "type": "string" } } }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": { "$ref": "#/entities/UserProfile" }, "description": "Private user profiles." },
+    "/publicUsers/{userId}": { "schema": { "$ref": "#/entities/UserProfile" }, "description": "Public-facing user profiles for directory." },
+    "/organisations/{orgId}": { "schema": { "$ref": "#/entities/Organisation" }, "description": "Agency organisation records." },
+    "/properties/{propId}": { "schema": { "$ref": "#/entities/Property" }, "description": "Production property lots." },
+    "/geography/{regionId}": { "schema": { "$ref": "#/entities/GeoRegion" }, "description": "ONS Regions." },
+    "/geography/{regionId}/areas/{areaId}": { "schema": { "$ref": "#/entities/GeoArea" }, "description": "ONS Counties." },
+    "/geography/{regionId}/areas/{areaId}/locations/{locationId}": { "schema": { "$ref": "#/entities/GeoLocation" }, "description": "ONS Cities/Boroughs." }
+  }
+}

@@ -1,0 +1,41 @@
+
+{
+  "feeds": [
+    {
+      "name": "Essential Information Group (EIG)",
+      "url": "https://www.eigpropertyauctions.co.uk/news/rss"
+    },
+    {
+      "name": "BBC News (Business/UK)",
+      "url": "http://feeds.bbci.co.uk/news/business/rss.xml"
+    },
+    {
+      "name": "Rightmove News",
+      "url": "https://www.rightmove.co.uk/news/feed/"
+    },
+    {
+      "name": "Zoopla Advantage",
+      "url": "https://www.zoopla.co.uk/advantage/feed/"
+    },
+    {
+      "name": "The Property Ombudsman",
+      "url": "https://www.tpos.co.uk/news-rss-feed"
+    },
+    {
+      "name": "RICS (Chartered Surveyors)",
+      "url": "https://www.rics.org/uk/news-insight/rss.xml"
+    },
+    {
+      "name": "The Negotiator Magazine",
+      "url": "https://thenegotiator.co.uk/feed/"
+    },
+    {
+      "name": "Estate Gazette (EG)",
+      "url": "https://www.egi.co.uk/news/feed/"
+    },
+    {
+      "name": "Property Week",
+      "url": "https://www.propertyweek.com/7001431.rss"
+    }
+  ]
+}

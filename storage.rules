@@ -1,0 +1,41 @@
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isGlobalAdmin() {
+      return isSignedIn() && (
+        request.auth.uid == "YEMX9fZTcZRf0gzaP9WHIUIsaXk1" || 
+        request.auth.uid == "r4q6hhyH9Qg9Ff2uCJQlOYUa1xM2" || 
+        request.auth.uid == "XVtQ7DdJCLVRuPnWhdpshJ0wxwz2" || 
+        request.auth.uid == "W8MAMYxxIBhrOWAz6tcog9DCLUD2"
+      );
+    }
+
+    // GLOBAL ADMIN OVERRIDE (ABSOLUTE PRIORITY)
+    match /{allPaths=**} {
+      allow read, write: if isGlobalAdmin();
+    }
+
+    // ORGANISATION LOGOS
+    match /organisations/{orgId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // USER PROFILE AVATARS
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // PROPERTY MARKETING COLLATERAL
+    match /properties/{propId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+  }
+}
