@@ -225,6 +225,7 @@ export interface Property {
     tenure: "Freehold" | "Leasehold" | "Commonhold";
     tenancyStatus: "Vacant" | "Tenanted";
     sellers: Party[];
+    buyers?: Party[];
     solicitor: SolicitorFirm;
     photographs?: string[];
     floorplanUrl?: string;

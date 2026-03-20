@@ -29,8 +29,10 @@ export function middleware(request: NextRequest) {
   // DMZ: Public facing pages accessible without authentication.
   const publicPaths = ['/login', '/signup', '/forgot-password', '/privacy-policy'];
 
-  // Forensic check for public ingress.
-  const isPublicPath = publicPaths.some(path => pathname.startsWith(path));
+  // Forensic check for public ingress (including hardcoded asset bypasses).
+  const isPublicPath = 
+    publicPaths.some(path => pathname.startsWith(path)) || 
+    pathname.match(/\.(png|jpg|jpeg|svg|ico|gif|webp)$/i);
 
   if (sessionCookie) {
     // If authenticated and accessing a public entry point, redirect to production dashboard.

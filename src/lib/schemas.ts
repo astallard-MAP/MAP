@@ -213,6 +213,7 @@ export const PropertyFormSchema = z.object({
     tenure: z.enum(["Freehold", "Leasehold", "Commonhold"]),
     tenancyStatus: z.enum(["Vacant", "Tenanted"]),
     sellers: z.array(PartySchema).min(1, 'At least one seller is required.'),
+    buyers: z.array(PartySchema).optional(),
     solicitor: SolicitorFirmSchema,
     auctionType: z.enum(["Online Timed Auction", "Livestream Auction", "In Room Auction", "Live at Property Auction", "Modern Method of Auction"]),
     auctionEventId: z.string().optional(),

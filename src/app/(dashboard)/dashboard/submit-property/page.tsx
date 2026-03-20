@@ -260,6 +260,7 @@ export default function SubmitPropertyPage() {
     defaultValues: {
       status: 'Draft',
       sellers: [{ partyType: 'Individual', email: '', mobile: '', address: emptyAddress }],
+      buyers: [],
       solicitor: { companyName: '', address: emptyAddress, contacts: [{title: "Mr", firstName: "", surname: "", email: ""}] },
       propertyType: 'House',
       tenure: 'Freehold',
@@ -303,6 +304,11 @@ export default function SubmitPropertyPage() {
   const { fields: solicitorContactFields, append: appendSolicitorContact, remove: removeSolicitorContact } = useFieldArray({
     control: form.control,
     name: "solicitor.contacts",
+  });
+
+  const { fields: buyerFields, append: appendBuyer, remove: removeBuyer } = useFieldArray({
+    control: form.control,
+    name: "buyers",
   });
 
   const watchedReservePrice = useWatch({ control: form.control, name: 'reservePrice' });
@@ -1080,13 +1086,29 @@ export default function SubmitPropertyPage() {
               <TabsContent value="buyers" className="mt-6">
                 <Card className="shadow-sm border-t-4 border-t-primary">
                   <CardHeader>
-                    <CardTitle>Buyer Strategy</CardTitle>
-                    <CardDescription>Special instructions and premium protocols.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5 text-primary"/> Buyer Parties & Strategy</CardTitle>
+                    <CardDescription>Register associated buyers and define any special instructions or premium protocols.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={form.control} name="buyerInstructions" render={({ field }) => (
-                      <FormItem><FormLabel>Buyer Instructions</FormLabel><FormControl><Textarea rows={6} placeholder="Enter any specific buyer registration or vetting requirements..." {...field}/></FormControl></FormItem>
-                    )}/>
+                    {buyerFields.map((field, index) => (
+                      <div key={field.id} className="border p-6 rounded-lg bg-slate-50/30 relative">
+                        <Button type="button" variant="ghost" size="icon" onClick={() => removeBuyer(index)} className="absolute top-2 right-2 text-destructive"><Trash2 className="h-4 w-4"/></Button>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <FormField control={form.control} name={`buyers.${index}.partyType`} render={({ field }) => (
+                            <FormItem><FormLabel>Party Type</FormLabel><Select onValueChange={field.onChange} value={field.value || 'Individual'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Individual">Individual</SelectItem><SelectItem value="Company">Company</SelectItem><SelectItem value="Corporate Body">Corporate Body</SelectItem></SelectContent></Select></FormItem>
+                          )}/>
+                          <FormField control={form.control} name={`buyers.${index}.email`} render={({ field }) => (<FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field}/></FormControl></FormItem>)}/>
+                        </div>
+                        <div className="mt-6 pt-6 border-t"><AddressFields control={form.control} namePrefix={`buyers.${index}.address`} /></div>
+                      </div>
+                    ))}
+                    <Button type="button" variant="outline" onClick={() => appendBuyer({ partyType: 'Individual', email: '', mobile: '', address: emptyAddress })} className="w-full border-dashed"><Plus className="mr-2 h-4 w-4"/> Add Another Buyer Party</Button>
+
+                    <div className="mt-8 pt-8 border-t">
+                      <FormField control={form.control} name="buyerInstructions" render={({ field }) => (
+                        <FormItem><FormLabel>Buyer Instructions</FormLabel><FormControl><Textarea rows={6} placeholder="Enter any specific buyer registration or vetting requirements..." {...field}/></FormControl></FormItem>
+                      )}/>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
