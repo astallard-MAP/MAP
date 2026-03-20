@@ -235,6 +235,8 @@ export default function SubmitPropertyPage() {
   const [isAiProcessing, setIsAiProcessing] = useState<string | null>(null);
   const isInitialLoad = useRef(true);
 
+  const canEditAdminFinancials = userProfile?.role === "Global Admin" || userProfile?.role === "TAD Admin";
+
   // Auction Type Acknowledgement State
   const [showAuctionNote, setShowAuctionNote] = useState(false);
   const [activeNote, setActiveNote] = useState<any>(null);
@@ -264,7 +266,9 @@ export default function SubmitPropertyPage() {
       tenancyStatus: 'Vacant',
       auctionType: "" as any, 
       entryFeeType: 'instruct',
-      commission: { type: 'percentage', percentage: 3.00, fixedAmount: 2500 },
+      buyerAdminFee: { percentage: 0.5, minimum: 750 },
+      buyerPremium: { percentage: 1.0, minimum: 1800 },
+      commission: { type: 'percentage', percentage: 3.00, minimumAmount: 3000, fixedAmount: 3000 },
       accommodation: [],
       photographs: [],
       headline: "",
@@ -944,27 +948,50 @@ export default function SubmitPropertyPage() {
 
                       {form.watch("commission.type") === 'percentage' ? (
                         <div className="space-y-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                          <FormField
-                            control={form.control}
-                            name="commission.percentage"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Commission Percentage (%)</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="number" 
-                                    step="0.25" 
-                                    placeholder="3.00" 
-                                    {...field} 
-                                    onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
-                                  />
-                                </FormControl>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1">
-                                  Subject to a minimum of £3,000.00 plus VAT
-                                </p>
-                              </FormItem>
-                            )}
-                          />
+                          <div className="grid md:grid-cols-2 gap-6">
+                            <FormField
+                              control={form.control}
+                              name="commission.percentage"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Commission Percentage (%)</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="number" 
+                                      step="0.01" 
+                                      className="max-w-[8ch]"
+                                      placeholder="3.00" 
+                                      {...field} 
+                                      onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                                    />
+                                  </FormControl>
+                                  <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1">
+                                    Up to 2 decimal places
+                                  </p>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="commission.minimumAmount"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Minimum Amount (£)</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="number" 
+                                      placeholder="3000" 
+                                      {...field} 
+                                      onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                                    />
+                                  </FormControl>
+                                  <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1">
+                                    Plus Value Added Tax (VAT)
+                                  </p>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
                       ) : (
                         <div className="space-y-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
@@ -977,7 +1004,7 @@ export default function SubmitPropertyPage() {
                                 <FormControl>
                                   <Input 
                                     type="number" 
-                                    placeholder="2500" 
+                                    placeholder="3000" 
                                     {...field} 
                                     onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
                                   />
@@ -991,6 +1018,61 @@ export default function SubmitPropertyPage() {
                         </div>
                       )}
                     </div>
+
+                    <div className="pt-6 border-t space-y-6">
+                      <h4 className="font-bold text-sm text-slate-800 flex items-center justify-between">
+                        Buyer Fee Protocols
+                        {!canEditAdminFinancials && <span className="text-[10px] font-normal uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded">Locked</span>}
+                      </h4>
+                      <div className="grid md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div className="space-y-4">
+                          <h5 className="text-[11px] font-bold uppercase text-slate-500 border-b pb-2">Buyer Administration Fee</h5>
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField control={form.control} name="buyerAdminFee.percentage" render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Percentage (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.1" {...field} disabled={!canEditAdminFinancials} onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))} />
+                                </FormControl>
+                                <p className="text-[9px] text-muted-foreground uppercase">Plus VAT</p>
+                              </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="buyerAdminFee.minimum" render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Minimum (£)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} disabled={!canEditAdminFinancials} onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))} />
+                                </FormControl>
+                                <p className="text-[9px] text-muted-foreground uppercase">Plus VAT</p>
+                              </FormItem>
+                            )}/>
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <h5 className="text-[11px] font-bold uppercase text-slate-500 border-b pb-2">Buyers Premium</h5>
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField control={form.control} name="buyerPremium.percentage" render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Percentage (%)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" step="0.1" {...field} disabled={!canEditAdminFinancials} onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))} />
+                                </FormControl>
+                                <p className="text-[9px] text-muted-foreground uppercase">Plus VAT</p>
+                              </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="buyerPremium.minimum" render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Minimum (£)</FormLabel>
+                                <FormControl>
+                                  <Input type="number" {...field} disabled={!canEditAdminFinancials} onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))} />
+                                </FormControl>
+                                <p className="text-[9px] text-muted-foreground uppercase">Inc VAT</p>
+                              </FormItem>
+                            )}/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -1002,9 +1084,6 @@ export default function SubmitPropertyPage() {
                     <CardDescription>Special instructions and premium protocols.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={form.control} name="buyerPremium" render={({ field }) => (
-                      <FormItem><FormLabel>Buyer Premium (%)</FormLabel><FormControl><Input type="number" step="0.1" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}/></FormControl><FormMessage/></FormItem>
-                    )}/>
                     <FormField control={form.control} name="buyerInstructions" render={({ field }) => (
                       <FormItem><FormLabel>Buyer Instructions</FormLabel><FormControl><Textarea rows={6} placeholder="Enter any specific buyer registration or vetting requirements..." {...field}/></FormControl></FormItem>
                     )}/>

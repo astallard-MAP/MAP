@@ -270,7 +270,7 @@ export interface LegalDocument { type: string; originalUrl?: string; redactedUrl
 export interface AccommodationGroup { group: string; rooms: Room[]; }
 export interface Room { name: string; widthFt?: number; widthIn?: number; lengthFt?: number; lengthIn?: number; widthM?: number; lengthM?: number; }
 export interface Party { partyType: string; email: string; mobile: string; address: Address; }
-export interface Commission { type: 'percentage' | 'fixed'; percentage?: number; fixedAmount?: number; }
+export interface Commission { type: 'percentage' | 'fixed'; percentage?: number; minimumAmount?: number; fixedAmount?: number; }
 
 export interface SupportChat {
     id: string;

@@ -2,20 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-      },
-       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'maps.googleapis.com',
-      }
-    ],
+    unoptimized: true,
   },
   experimental: {
     serverComponentsExternalPackages: [

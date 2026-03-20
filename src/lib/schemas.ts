@@ -224,12 +224,19 @@ export const PropertyFormSchema = z.object({
     organisationId: z.string().optional(),
     submittedBy: z.string().optional(),
     entryFeeType: z.enum(['instruct', 'deferred']),
-    commission: z.object({ type: z.enum(['percentage', 'fixed']), percentage: z.number().optional(), fixedAmount: z.number().optional() }),
+    commission: z.object({ type: z.enum(['percentage', 'fixed']), percentage: z.number().optional(), minimumAmount: z.number().optional(), fixedAmount: z.number().optional() }),
     photographs: z.array(z.string()).optional(),
     floorplanUrl: z.string().optional(),
     videoTourUrl: z.string().optional(),
     virtualTourUrl: z.string().optional(),
-    buyerPremium: z.number().optional(),
+    buyerAdminFee: z.object({
+      percentage: z.number().optional(),
+      minimum: z.number().optional()
+    }).optional(),
+    buyerPremium: z.object({
+      percentage: z.number().optional(),
+      minimum: z.number().optional()
+    }).optional(),
     buyerInstructions: z.string().optional(),
     region: z.string().optional(),
     area: z.string().optional(),
