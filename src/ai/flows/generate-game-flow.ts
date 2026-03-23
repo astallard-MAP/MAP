@@ -21,6 +21,13 @@ const GenerateGameOutputSchema = z.object({
   puzzle: z.any().describe('The puzzle data structure (anagram string or array of strings for grid)'),
   solution: z.string().describe('The plain text solution to the puzzle (single word for anagram, first word for grid)'),
   hint: z.string().describe('A cheerful hint from Frank in UK English'),
+}).refine(data => {
+  if (data.type === 'Franagram') {
+    return data.solution.length >= 5 && data.solution.length <= 9;
+  }
+  return true;
+}, {
+  message: "Franagram solution must be between 5 and 9 characters (UK-EN Difficulty Protocol)."
 });
 
 export async function generateDailyGame(input: z.infer<typeof GenerateGameInputSchema>) {
@@ -47,9 +54,9 @@ const generateDailyGameFlow = ai.defineFlow(
         REQUIRED GAME TYPE: ${type}
         
         If Franagram:
-        - Pick a word common in UK real estate (e.g., Auctioneer, Completion, Freehold, Conveyancing, Solicitors, Valuation, Tenancy).
+        - Pick a word common in UK real estate (e.g., Auctioneer, Completion, Freehold, Valuation, Tenancy, Deposit, Exchange).
+        - The solution MUST be exactly one word, between 5 and 9 letters long.
         - Provide the anagram (jumbled letters) and the correct solution (the unscrambled word).
-        - The solution MUST be exactly one word.
         
         If WordGrid:
         - Generate a 4x4 word square.

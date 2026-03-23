@@ -30,7 +30,7 @@ import { Input } from "../../../components/ui/input";
 import PublicBrandLogo from "../../../components/PublicBrandLogo";
 import { useToast } from "../../../hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert";
-import { TitleEnum, AddressSchema } from "../../../lib/schemas";
+import { TitleEnum, BusinessTypeEnum, AddressSchema } from "../../../lib/schemas";
 import { AddressFields } from "../../../components/AddressFields";
 import { useFirestore, useAuth } from "../../../firebase";
 import type { StaffInvitation, UserProfile, PublicUserProfile } from "../../../lib/types";
@@ -42,6 +42,7 @@ const AccessRequestSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   surname: z.string().min(1, "Surname is required"),
   companyName: z.string().min(1, "Company name is required"),
+  businessType: BusinessTypeEnum,
   website: z.string().url("Valid URL required").optional().or(z.literal("")),
   contactTelephone: z.string().min(1, "Telephone is required"),
   contactEmail: z.string().email("Valid email required"),
@@ -121,6 +122,7 @@ function SignupPageContent() {
       firstName: "",
       surname: "",
       companyName: "",
+      businessType: "" as any,
       website: "",
       contactTelephone: "",
       contactEmail: "",
@@ -279,6 +281,18 @@ function SignupPageContent() {
                                 </div>
                                 <FormField control={accessRequestForm.control} name="companyName" render={({ field }) => (
                                     <FormItem><FormLabel className="text-[10px] uppercase font-bold text-slate-500">Company Name</FormLabel><FormControl><Input {...field} className="h-10 text-xs" /></FormControl></FormItem>
+                                )}/>
+                                <FormField control={accessRequestForm.control} name="businessType" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-[10px] uppercase font-bold text-slate-500">Company Type</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl><SelectTrigger className="h-10 text-xs"><SelectValue placeholder="Please Select" /></SelectTrigger></FormControl>
+                                            <SelectContent>
+                                                {BusinessTypeEnum.options.map(bt => <SelectItem key={bt} value={bt}>{bt}</SelectItem>)}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
                                 )}/>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField control={accessRequestForm.control} name="contactTelephone" render={({ field }) => (

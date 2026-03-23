@@ -136,6 +136,7 @@ export interface StaffInvitation {
 export interface AccessRequest {
     id: string;
     companyName: string;
+    businessType: string;
     firstName: string;
     surname: string;
     contactEmail: string;

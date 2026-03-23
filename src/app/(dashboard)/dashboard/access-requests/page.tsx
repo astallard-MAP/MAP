@@ -50,7 +50,7 @@ export default function AccessRequestsPage() {
         const newOrgData: Omit<Organisation, 'id'> = {
             name: request.companyName,
             status: "Pending",
-            businessType: 'Private Limited Company',
+            businessType: request.businessType as any,
             ownerUid: '',
             headOfficeAddress: request.headOfficeAddress,
             registeredOfficeAddress: request.headOfficeAddress,
@@ -98,6 +98,7 @@ export default function AccessRequestsPage() {
             <TableHeader>
                 <TableRow>
                     <TableHead>Company Name</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Contact Person</TableHead>
                     <TableHead>Contact Email</TableHead>
                     <TableHead>Date Submitted</TableHead>
@@ -109,6 +110,7 @@ export default function AccessRequestsPage() {
                     requests.map(request => (
                         <TableRow key={request.id}>
                             <TableCell className="font-medium">{request.companyName}</TableCell>
+                            <TableCell className="text-xs uppercase font-bold text-slate-500">{request.businessType}</TableCell>
                             <TableCell>{request.firstName} {request.surname}</TableCell>
                             <TableCell>{request.contactEmail}</TableCell>
                             <TableCell>
