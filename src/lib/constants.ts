@@ -16,13 +16,13 @@ export const GLOBAL_ADMIN_UIDS = [
 // Official Agreed Auction Schedule for 2025
 // All dates are Thursdays as per production standard.
 export const OFFICIAL_AUCTION_DATES = [
-    { date: "2025-02-27", title: "February Property Auction" },
-    { date: "2025-03-27", title: "March Property Auction" },
-    { date: "2025-05-22", title: "May Property Auction" },
-    { date: "2025-07-17", title: "July Property Auction" },
-    { date: "2025-09-25", title: "September Property Auction" },
-    { date: "2025-10-30", title: "October Property Auction" },
-    { date: "2025-12-11", title: "December Property Auction" },
+    { date: "2026-05-21", title: "May Property Auction" },
+    { date: "2026-07-23", title: "July Property Auction" },
+    { date: "2026-09-24", title: "September Property Auction" },
+    { date: "2026-10-29", title: "October Property Auction" },
+    { date: "2027-02-25", title: "February Property Auction" },
+    { date: "2027-03-25", title: "March Property Auction" },
+    { date: "2027-04-29", title: "April Property Auction" },
 ];
 
 export const AUCTION_KEYWORDS = [

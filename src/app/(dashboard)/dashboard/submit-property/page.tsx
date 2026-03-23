@@ -20,10 +20,13 @@ import {
 import type { Property, Branch, Address } from "../../../../lib/types";
 import { useToast } from "../../../../hooks/use-toast";
 import { auctionSelectionNotes } from "../../../../lib/auction-selection-notes";
+import { OFFICIAL_AUCTION_DATES } from "../../../../lib/constants";
+import { addWeeks, isAfter, format } from "date-fns";
 import { usePermissions } from "../../../../context/PermissionContext";
 import { rewriteFieldAction, researchLocationAction } from "../../../../app/actions/client-ai-actions";
 
 import { Button } from "../../../../components/ui/button";
+import { Badge } from "../../../../components/ui/badge";
 import {
   Card,
   CardContent,
@@ -77,7 +80,9 @@ import {
   Search,
   ShieldAlert,
   Zap,
-  FileCheck
+  FileCheck,
+  Calendar,
+  Clock
 } from "lucide-react";
 
 import { AddressFields } from "../../../../components/AddressFields";
@@ -845,24 +850,71 @@ export default function SubmitPropertyPage() {
                     <CardTitle className="flex items-center gap-2"><Gavel className="h-5 w-5 text-primary"/> Auction Assignment</CardTitle>
                     <CardDescription>Clinical method selection and scheduling.</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
-                    <FormField control={form.control} name="auctionType" render={({ field }) => (
-                      <FormItem><FormLabel>Auction Method</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || ""}>
-                            <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Please Select..." />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                {auctionSelectionNotes.map(n => <SelectItem key={n.title} value={n.title}>{n.title}</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}/>
-                    <FormField control={form.control} name="entryFeeType" render={({ field }) => (
-                      <FormItem><FormLabel>Entry Fee Protocol</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="instruct">Instruct (Immediate)</SelectItem><SelectItem value="deferred">Deferred (On Sale)</SelectItem></SelectContent></Select></FormItem>
-                    )}/>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-8 items-start">
+                      {/* Left: Auction Selection (50%) */}
+                      <div className="space-y-6">
+                        <FormField control={form.control} name="auctionType" render={({ field }) => (
+                          <FormItem><FormLabel className="font-bold">Auction Method</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                                <FormControl>
+                                    <SelectTrigger className="bg-white">
+                                        <SelectValue placeholder="Please Select Method..." />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {auctionSelectionNotes.map(n => <SelectItem key={n.title} value={n.title}>{n.title}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                            <FormDescription className="text-[10px] italic">Select the clinical method for asset disposal.</FormDescription>
+                          </FormItem>
+                        )}/>
+                        <FormField control={form.control} name="entryFeeType" render={({ field }) => (
+                          <FormItem><FormLabel className="font-bold">Entry Fee Protocol</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="bg-white"><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="instruct">Instruct (Immediate)</SelectItem><SelectItem value="deferred">Deferred (On Sale)</SelectItem></SelectContent></Select></FormItem>
+                        )}/>
+                      </div>
+
+                      {/* Right: Upcoming Dates (50%) */}
+                      <div className="bg-slate-50 border-2 border-dashed border-primary/20 p-6 rounded-xl space-y-4">
+                        <div className="flex items-center justify-between border-b border-primary/10 pb-4">
+                          <h4 className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500">
+                             <Calendar className="h-4 w-4 text-primary" /> Upcoming Auction Schedule
+                          </h4>
+                          <Badge variant="outline" className="text-[9px] bg-white font-black text-primary border-primary/30">4-Week Intake Policy</Badge>
+                        </div>
+                        
+                        <div className="space-y-3">
+                           {auctionSelectionNotes.map(note => {
+                              // Intake Logic: Must be minimum 4 weeks from today (2026-03-23)
+                              const intakeCutoff = addWeeks(new Date(), 4);
+                              const nextDate = OFFICIAL_AUCTION_DATES.find(d => isAfter(new Date(d.date), intakeCutoff));
+                              
+                              return (
+                                <div key={note.title} className="flex items-center justify-between p-3 rounded-lg bg-white border shadow-sm group hover:border-primary/50 transition-all">
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                      <Clock className="h-3 w-3" />
+                                    </div>
+                                    <div>
+                                      <p className="text-[9px] font-black uppercase text-slate-400 leading-none">{note.title}</p>
+                                      <p className="text-xs font-bold text-slate-900 mt-1">{nextDate ? format(new Date(nextDate.date), 'dd MMMM yyyy') : 'TBC'}</p>
+                                    </div>
+                                  </div>
+                                  {nextDate && (
+                                    <Badge className="h-5 text-[9px] font-black uppercase bg-green-500 hover:bg-green-500 border-none">
+                                      Next Avail
+                                    </Badge>
+                                  )}
+                                </div>
+                              );
+                           })}
+                        </div>
+                        
+                        <div className="p-3 bg-white/50 rounded border text-[9px] text-zinc-500 leading-tight italic">
+                          * Dates above reflect the earliest clinical entry point for each auction type based on standard 4-week pre-production marketing periods.
+                        </div>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
