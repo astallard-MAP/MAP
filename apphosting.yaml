@@ -67,11 +67,11 @@ scheduledJobs:
     httpTarget:
       uri: "/api/cron/summarise-news"
       oidcToken:
-        serviceAccount: firebase-app-hosting-compute@PROJECT_ID.iam.gserviceaccount.com
+        serviceAccount: firebase-app-hosting-compute@map261125.iam.gserviceaccount.com
   - id: summarise-news-afternoon
     schedule: "0 14 * * *"
     timeZone: "Europe/London"
     httpTarget:
       uri: "/api/cron/summarise-news"
       oidcToken:
-        serviceAccount: firebase-app-hosting-compute@PROJECT_ID.iam.gserviceaccount.com
+        serviceAccount: firebase-app-hosting-compute@map261125.iam.gserviceaccount.com

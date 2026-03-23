@@ -228,12 +228,11 @@ function AccommodationManager({ form }: { form: any }) {
   );
 }
 
-function PartyFieldsCard({ form, index, namePrefix, remove }: { form: any, index: number, namePrefix: "sellers" | "buyers", remove: (i: number) => void }) {
+function PartyFieldsCard({ form, index, namePrefix }: { form: any, index: number, namePrefix: "sellers" | "buyers" }) {
   const partyType = useWatch({ control: form.control, name: `${namePrefix}.${index}.partyType` });
   
   return (
     <div className="border p-6 rounded-lg bg-slate-50/30 relative">
-      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 text-destructive transition-colors hover:bg-destructive/10"><Trash2 className="h-4 w-4"/></Button>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField control={form.control} name={`${namePrefix}.${index}.partyType`} render={({ field }) => (
@@ -772,7 +771,7 @@ export default function SubmitPropertyPage() {
                   <CardContent className="space-y-6">
                     <div className="space-y-6">
                       {sellerFields.map((field, index) => (
-                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="sellers" remove={removeSeller} />
+                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="sellers" />
                       ))}
                     </div>
                     <Button type="button" variant="outline" onClick={() => appendSeller({ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress })} className="w-full border-dashed mt-4"><Plus className="mr-2 h-4 w-4"/> Add Another Seller Party</Button>
@@ -1186,7 +1185,7 @@ export default function SubmitPropertyPage() {
                   <CardContent className="space-y-6">
                     <div className="space-y-6">
                       {buyerFields.map((field, index) => (
-                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="buyers" remove={removeBuyer} />
+                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="buyers" />
                       ))}
                     </div>
                     <Button type="button" variant="outline" onClick={() => appendBuyer({ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress })} className="w-full border-dashed mt-4"><Plus className="mr-2 h-4 w-4"/> Add Another Buyer Party</Button>

@@ -3,7 +3,7 @@ import { summariseAndSaveNews } from "../../../../app/actions/server-actions";
 
 /**
  * @fileOverview Definitive Cron Endpoint for News Summarisation.
- * Clinicaly stabilized for App Hosting Cloud Scheduler.
+ * Clinicaly stabilised for App Hosting Cloud Scheduler.
  * UK-EN Protocol Enforcement.
  */
 
