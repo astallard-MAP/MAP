@@ -223,6 +223,43 @@ function AccommodationManager({ form }: { form: any }) {
   );
 }
 
+function PartyFieldsCard({ form, index, namePrefix, remove }: { form: any, index: number, namePrefix: "sellers" | "buyers", remove: (i: number) => void }) {
+  const partyType = useWatch({ control: form.control, name: `${namePrefix}.${index}.partyType` });
+  
+  return (
+    <div className="border p-6 rounded-lg bg-slate-50/30 relative">
+      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="absolute top-2 right-2 text-destructive transition-colors hover:bg-destructive/10"><Trash2 className="h-4 w-4"/></Button>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormField control={form.control} name={`${namePrefix}.${index}.partyType`} render={({ field }) => (
+          <FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Party Type</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="bg-white"><SelectValue placeholder="Select..." /></SelectTrigger></FormControl><SelectContent><SelectItem value="Individual">Individual</SelectItem><SelectItem value="Group of Individuals">Group of Individuals</SelectItem><SelectItem value="Company">Company</SelectItem><SelectItem value="Corporate Body">Corporate Body</SelectItem></SelectContent></Select></FormItem>
+        )}/>
+        <FormField control={form.control} name={`${namePrefix}.${index}.email`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Email Address</FormLabel><FormControl><Input type="email" placeholder="e.g. contact@domain.com" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+        <FormField control={form.control} name={`${namePrefix}.${index}.mobile`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Mobile Number</FormLabel><FormControl><Input placeholder="e.g. 07123 456789" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+      </div>
+
+      {(partyType === 'Individual' || partyType === 'Group of Individuals') ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 animate-in fade-in duration-300">
+          <FormField control={form.control} name={`${namePrefix}.${index}.title`} render={({ field }) => (
+            <FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Title</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger className="bg-white"><SelectValue placeholder="Title" /></SelectTrigger></FormControl><SelectContent>{TitleEnum.options.map((t: string) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></FormItem>
+          )}/>
+          <FormField control={form.control} name={`${namePrefix}.${index}.firstName`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">First Name</FormLabel><FormControl><Input placeholder="e.g. John" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+          <FormField control={form.control} name={`${namePrefix}.${index}.surname`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Surname</FormLabel><FormControl><Input placeholder="e.g. Smith" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-in fade-in duration-300">
+          <FormField control={form.control} name={`${namePrefix}.${index}.companyName`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Company Name</FormLabel><FormControl><Input placeholder="e.g. Acme Property Ltd" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+          <FormField control={form.control} name={`${namePrefix}.${index}.registrationNumber`} render={({ field }) => (<FormItem><FormLabel className="text-xs font-bold uppercase text-slate-500">Company Reg No.</FormLabel><FormControl><Input placeholder="e.g. 12345678" {...field} className="bg-white" /></FormControl></FormItem>)}/>
+        </div>
+      )}
+
+      <div className="mt-6 pt-6 border-t border-slate-200">
+        <AddressFields control={form.control} namePrefix={`${namePrefix}.${index}.address`} />
+      </div>
+    </div>
+  );
+}
+
 export default function SubmitPropertyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -259,8 +296,9 @@ export default function SubmitPropertyPage() {
     resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
       status: 'Draft',
-      sellers: [{ partyType: 'Individual', email: '', mobile: '', address: emptyAddress }],
+      sellers: [{ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress }],
       buyers: [],
+      buyerInstructions: "",
       solicitor: { companyName: '', address: emptyAddress, contacts: [{title: "Mr", firstName: "", surname: "", email: ""}] },
       propertyType: 'House',
       tenure: 'Freehold',
@@ -718,19 +756,12 @@ export default function SubmitPropertyPage() {
                     <CardDescription>Register all individuals or companies selling the asset.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {sellerFields.map((field, index) => (
-                      <div key={field.id} className="border p-6 rounded-lg bg-slate-50/30 relative">
-                        <Button type="button" variant="ghost" size="icon" onClick={() => removeSeller(index)} className="absolute top-2 right-2 text-destructive"><Trash2 className="h-4 w-4"/></Button>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name={`sellers.${index}.partyType`} render={({ field }) => (
-                            <FormItem><FormLabel>Party Type</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Individual">Individual</SelectItem><SelectItem value="Company">Company</SelectItem><SelectItem value="Corporate Body">Corporate Body</SelectItem></SelectContent></Select></FormItem>
-                          )}/>
-                          <FormField control={form.control} name={`sellers.${index}.email`} render={({ field }) => (<FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field}/></FormControl></FormItem>)}/>
-                        </div>
-                        <div className="mt-6 pt-6 border-t"><AddressFields control={form.control} namePrefix={`sellers.${index}.address`} /></div>
-                      </div>
-                    ))}
-                    <Button type="button" variant="outline" onClick={() => appendSeller({ partyType: 'Individual', email: '', mobile: '', address: emptyAddress })} className="w-full border-dashed"><Plus className="mr-2 h-4 w-4"/> Add Another Seller Party</Button>
+                    <div className="space-y-6">
+                      {sellerFields.map((field, index) => (
+                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="sellers" remove={removeSeller} />
+                      ))}
+                    </div>
+                    <Button type="button" variant="outline" onClick={() => appendSeller({ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress })} className="w-full border-dashed mt-4"><Plus className="mr-2 h-4 w-4"/> Add Another Seller Party</Button>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -1090,19 +1121,12 @@ export default function SubmitPropertyPage() {
                     <CardDescription>Register associated buyers and define any special instructions or premium protocols.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {buyerFields.map((field, index) => (
-                      <div key={field.id} className="border p-6 rounded-lg bg-slate-50/30 relative">
-                        <Button type="button" variant="ghost" size="icon" onClick={() => removeBuyer(index)} className="absolute top-2 right-2 text-destructive"><Trash2 className="h-4 w-4"/></Button>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <FormField control={form.control} name={`buyers.${index}.partyType`} render={({ field }) => (
-                            <FormItem><FormLabel>Party Type</FormLabel><Select onValueChange={field.onChange} value={field.value || 'Individual'}><FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl><SelectContent><SelectItem value="Individual">Individual</SelectItem><SelectItem value="Company">Company</SelectItem><SelectItem value="Corporate Body">Corporate Body</SelectItem></SelectContent></Select></FormItem>
-                          )}/>
-                          <FormField control={form.control} name={`buyers.${index}.email`} render={({ field }) => (<FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field}/></FormControl></FormItem>)}/>
-                        </div>
-                        <div className="mt-6 pt-6 border-t"><AddressFields control={form.control} namePrefix={`buyers.${index}.address`} /></div>
-                      </div>
-                    ))}
-                    <Button type="button" variant="outline" onClick={() => appendBuyer({ partyType: 'Individual', email: '', mobile: '', address: emptyAddress })} className="w-full border-dashed"><Plus className="mr-2 h-4 w-4"/> Add Another Buyer Party</Button>
+                    <div className="space-y-6">
+                      {buyerFields.map((field, index) => (
+                        <PartyFieldsCard key={field.id} form={form} index={index} namePrefix="buyers" remove={removeBuyer} />
+                      ))}
+                    </div>
+                    <Button type="button" variant="outline" onClick={() => appendBuyer({ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress })} className="w-full border-dashed mt-4"><Plus className="mr-2 h-4 w-4"/> Add Another Buyer Party</Button>
 
                     <div className="mt-8 pt-8 border-t">
                       <FormField control={form.control} name="buyerInstructions" render={({ field }) => (
