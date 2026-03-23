@@ -270,7 +270,17 @@ export interface SolicitorContact { title: string; firstName: string; surname: s
 export interface LegalDocument { type: string; originalUrl?: string; redactedUrl?: string; }
 export interface AccommodationGroup { group: string; rooms: Room[]; }
 export interface Room { name: string; widthFt?: number; widthIn?: number; lengthFt?: number; lengthIn?: number; widthM?: number; lengthM?: number; }
-export interface Party { partyType: string; email: string; mobile: string; address: Address; }
+export interface Party { 
+    partyType: string;
+    title?: string;
+    firstName?: string;
+    surname?: string;
+    companyName?: string;
+    registrationNumber?: string;
+    email: string; 
+    mobile: string; 
+    address: Address; 
+}
 export interface Commission { type: 'percentage' | 'fixed'; percentage?: number; minimumAmount?: number; fixedAmount?: number; }
 
 export interface SupportChat {

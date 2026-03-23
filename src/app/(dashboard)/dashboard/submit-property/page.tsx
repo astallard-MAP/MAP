@@ -302,7 +302,7 @@ export default function SubmitPropertyPage() {
     defaultValues: {
       status: 'Draft',
       sellers: [{ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress }],
-      buyers: [],
+      buyers: [{ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress }],
       buyerInstructions: "",
       solicitor: { companyName: '', address: emptyAddress, contacts: [{title: "Mr", firstName: "", surname: "", email: ""}] },
       propertyType: 'House',
@@ -375,7 +375,16 @@ export default function SubmitPropertyPage() {
 
   useEffect(() => {
     if (existingProperty) {
-      form.reset(existingProperty as any);
+      // Forensic Normalization: Ensure buyers/sellers arrays exist and are populated with correct structure
+      const data = { ...existingProperty };
+      if (!data.sellers || data.sellers.length === 0) {
+        data.sellers = [{ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress }];
+      }
+      if (!data.buyers || data.buyers.length === 0) {
+        data.buyers = [{ partyType: 'Individual', email: '', mobile: '', title: 'Mr', firstName: '', surname: '', address: emptyAddress }];
+      }
+      
+      form.reset(data as any);
       setAcknowledgedType(existingProperty.auctionType || null);
       isInitialLoad.current = false;
     }
@@ -884,7 +893,9 @@ export default function SubmitPropertyPage() {
                         </div>
                         
                         <div className="space-y-3">
-                           {auctionSelectionNotes.map(note => {
+                           {auctionSelectionNotes
+                             .filter(note => note.title !== "Live at Property Auction")
+                             .map(note => {
                               // Intake Logic: Must be minimum 4 weeks from today (2026-03-23)
                               const intakeCutoff = addWeeks(new Date(), 4);
                               const nextDate = OFFICIAL_AUCTION_DATES.find(d => isAfter(new Date(d.date), intakeCutoff));
@@ -1169,8 +1180,8 @@ export default function SubmitPropertyPage() {
               <TabsContent value="buyers" className="mt-6">
                 <Card className="shadow-sm border-t-4 border-t-primary">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5 text-primary"/> Buyer Parties & Strategy</CardTitle>
-                    <CardDescription>Register associated buyers and define any special instructions or premium protocols.</CardDescription>
+                    <CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5 text-primary"/> Buyer Parties</CardTitle>
+                    <CardDescription>Register all individuals or companies associated with the purchase.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-6">
