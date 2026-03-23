@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fdashboard\u002Fdocument-management\u002Feditor\u002F[id]","\u002Fdashboard\u002Fproperties\u002F[id]","\u002Fdashboard\u002Fsolicitor\u002Feditor\u002F[id]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
