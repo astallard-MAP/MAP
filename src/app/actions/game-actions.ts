@@ -91,3 +91,29 @@ export async function submitGameResult(userId: string, userName: string, gameId:
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Retrieves the leaderboard for a specific game, sorted by time taken.
+ */
+export async function getGameLeaderboard(gameId: string) {
+  try {
+    const app = await initializeAdminApp();
+    const firestore = getFirestore(app);
+
+    const snapshot = await firestore.collection('gameResults')
+      .where('gameId', '==', gameId)
+      .orderBy('timeTakenMs', 'asc')
+      .limit(10)
+      .get();
+
+    const results = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return { success: true, data: JSON.parse(JSON.stringify(results)) };
+  } catch (error: any) {
+    console.error("Leaderboard Retrieval Failure:", error.message);
+    return { success: false, error: error.message };
+  }
+}

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Trophy, Flame, Loader2, Gavel, Sparkles, Info, X } from "lucide-react";
-import { getDailyGame, submitGameResult } from "../app/actions/game-actions";
+import { getDailyGame, submitGameResult, getGameLeaderboard } from "../app/actions/game-actions";
 import { useToast } from "../hooks/use-toast";
 import { Badge } from "./ui/badge";
 import { cn } from "../lib/utils";
@@ -22,22 +22,40 @@ export function DailyGameWidget() {
   const [loading, setLoading] = useState(true);
   const [userInput, setUserInput] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isRevealed, setIsRevealed] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
   useEffect(() => {
     async function load() {
       const res = await getDailyGame();
       if (res.success) {
         setGame(res.data);
-        setStartTime(Date.now());
+        // We don't start the timer here anymore, as per USER directive.
       }
       setLoading(false);
     }
     load();
   }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isRevealed && !solved && startTime) {
+      interval = setInterval(() => {
+        setCurrentTime(Date.now() - startTime);
+      }, 10);
+    }
+    return () => clearInterval(interval);
+  }, [isRevealed, solved, startTime]);
+
+  const handleReveal = () => {
+    setIsRevealed(true);
+    setStartTime(Date.now());
+  };
 
   const handleCheck = async () => {
     if (!game || !userInput.trim()) return;
@@ -72,7 +90,15 @@ export function DailyGameWidget() {
         );
       }
       
-      toast({ title: "Brilliant!", description: `You solved Frank's challenge in ${Math.round(duration/1000)}s!` });
+      const leaderRes = await getGameLeaderboard(game.date);
+      if (leaderRes.success) {
+        setLeaderboard(leaderRes.data);
+      }
+      
+      toast({ 
+        title: "Brilliant!", 
+        description: `You solved Frank's challenge in ${(duration/1000).toFixed(3)}s!` 
+      });
       setIsSubmitting(false);
     } else {
       toast({ 
@@ -137,9 +163,34 @@ export function DailyGameWidget() {
             </div>
         )}
 
-        {!solved ? (
+        {!isRevealed ? (
+            <div className="bg-slate-50 p-8 rounded-xl border-2 border-dashed border-brand-secondary/20 text-center space-y-6">
+                <div>
+                    <Badge variant="outline" className="mb-2 border-brand-secondary/30 text-brand-secondary bg-white">
+                        TIME-SENSITIVE OPERATION
+                    </Badge>
+                    <h3 className="text-lg font-bold text-slate-900">Today's Frank-a-gram is Locked</h3>
+                    <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2">
+                        Today Frank has set a {game.type} puzzle. The timer starts exactly when you reveal the puzzle. 
+                        Players are ranked by their accuracy and speed to one-thousandth of a second.
+                    </p>
+                </div>
+                <Button 
+                    onClick={handleReveal} 
+                    size="lg"
+                    className="bg-brand-secondary hover:bg-brand-secondary/90 text-white font-bold h-14 px-8 shadow-lg transition-all active:scale-95 group"
+                >
+                    Reveal Today's Puzzle
+                    <Sparkles className="ml-2 h-5 w-5 group-hover:animate-pulse" />
+                </Button>
+            </div>
+        ) : !solved ? (
           <>
             <div className="bg-slate-50 p-6 rounded-xl border-2 border-dashed border-brand-secondary/20 text-center relative overflow-hidden">
+              <div className="absolute top-2 right-4 flex items-center gap-1.5 text-[10px] font-mono font-bold text-brand-secondary animate-pulse">
+                <div className="h-1.5 w-1.5 rounded-full bg-brand-secondary" />
+                TIMING: {(currentTime/1000).toFixed(3)}s
+              </div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">Today's Frank-a-gram</p>
               
               {game.type === 'Franagram' ? (
@@ -192,19 +243,34 @@ export function DailyGameWidget() {
             </div>
           </>
         ) : (
-          <div className="py-8 text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="py-6 text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="relative inline-block">
-              <Trophy className="h-16 w-16 text-yellow-500 mx-auto animate-bounce" />
+              <Trophy className="h-12 w-12 text-yellow-500 mx-auto animate-bounce" />
               <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-20 -z-10 rounded-full" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Achievement Unlocked!</h3>
-              <p className="text-sm text-muted-foreground font-medium">You have earned 10 ranking points.</p>
+              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Mission Accomplished!</h3>
+              <p className="text-xs text-muted-foreground font-medium">Verified Time: <span className="text-brand-secondary font-bold">{(currentTime/1000).toFixed(3)}s</span></p>
             </div>
-            <div className="bg-slate-100 py-2 px-6 rounded-full inline-block border-2 border-green-200">
-                <p className="text-xs font-mono font-bold text-green-700 uppercase tracking-widest">
-                    Verified: {userInput.toUpperCase()}
-                </p>
+            
+            <div className="w-full bg-slate-50/50 rounded-lg border border-brand-secondary/10 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                    <Trophy className="h-4 w-4 text-brand-secondary" />
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-700">Today's Top Performers</h4>
+                </div>
+                <div className="space-y-2">
+                    {leaderboard.length > 0 ? leaderboard.map((res, i) => (
+                        <div key={res.id} className="flex justify-between items-center text-[10px] py-1 border-b border-brand-secondary/5 last:border-0">
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold text-slate-400 w-4">{i + 1}.</span>
+                                <span className={cn("font-semibold", res.userId === userProfile?.uid ? "text-brand-secondary" : "text-slate-600")}>
+                                    {res.userName || "Anonymous Partner"}
+                                </span>
+                            </div>
+                            <span className="font-mono text-slate-500">{(res.timeTakenMs / 1000).toFixed(3)}s</span>
+                        </div>
+                    )) : <p className="text-[10px] text-muted-foreground italic">No times recorded yet. You're the trailblazer!</p>}
+                </div>
             </div>
           </div>
         )}
