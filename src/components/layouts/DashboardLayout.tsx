@@ -270,10 +270,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <div className="h-4 w-[1px] bg-slate-200 hidden md:block" />
                   <div className="md:hidden flex flex-col items-start leading-none">
                     <span className="text-xs font-bold font-mono">
-                      {mountedTime ? format(mountedTime, "HH:mm:ss") : "--:--:--"}
+                      {mountedTime ? format(mountedTime, "HH:mm") : "--:--"}
                     </span>
                     <span className="text-[8px] font-bold text-slate-500 uppercase tracking-tighter">
-                      {mountedTime ? format(mountedTime, "EEE d MMM") : ""}
+                      {mountedTime ? format(mountedTime, "dd/MM/yyyy") : ""}
                     </span>
                   </div>
                 </div>

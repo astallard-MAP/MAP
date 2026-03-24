@@ -444,7 +444,7 @@ export default function DashboardPage() {
             
             <Badge variant="outline" className="h-9 px-4 border-2 border-brand-secondary/20 flex items-center gap-2">
                 <Bookmark className="h-3.5 w-3.5 text-brand-secondary" />
-                <span className="text-[10px] font-bold uppercase tracking-tight">Next Official: {nextOfficialAuction ? format(new Date(nextOfficialAuction.date), 'dd MMM yy') : 'TBC'}</span>
+                <span className="text-[10px] font-bold uppercase tracking-tight">Next Official: {nextOfficialAuction ? format(new Date(nextOfficialAuction.date), 'dd/MM/yyyy') : 'TBC'}</span>
             </Badge>
         </div>
 

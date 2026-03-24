@@ -19,11 +19,12 @@ const GenerateGameInputSchema = z.object({
 const GenerateGameOutputSchema = z.object({
   type: GameTypeEnum,
   puzzle: z.any().describe('The puzzle data structure (anagram string or array of strings for grid)'),
-  solution: z.string().describe('The plain text solution to the puzzle (single word for anagram, first word for grid)'),
+  solution: z.any().describe('The solution (string for anagram, 4x4 array of strings for grid)'),
   hint: z.string().describe('A cheerful hint from Frank in UK English'),
 }).refine(data => {
   if (data.type === 'Franagram') {
-    return data.solution.length >= 5 && data.solution.length <= 9;
+    const sol = typeof data.solution === 'string' ? data.solution : '';
+    return sol.length >= 5 && sol.length <= 9;
   }
   return true;
 }, {
@@ -59,13 +60,12 @@ const generateDailyGameFlow = ai.defineFlow(
         - Provide the anagram (jumbled letters) and the correct solution (the unscrambled word).
         
         If WordGrid:
-        - Generate a 4x4 word square.
-        - A word square contains 4 words that read the same horizontally and vertically.
-        - Theme: House, home, auctions, real estate.
-        - Output the grid as an array of 4 strings.
-        - The solution MUST be the FIRST word of the square (the top row).
+        - Generate a 4x4 word square (all rows and columns spell the same words).
+        - Themes: Property, house, auctions, land, home (e.g., PLOT, SALE, SOLD, DEED, HOME, AREA, ROOF).
+        - Output "puzzle" as a 4x4 array of strings representing the grid rows.
+        - Output "solution" as the SAME 4x4 array of strings.
         
-        Provide a helpful, encouraging hint. Avoid using the solution word in the hint.
+        Provide a helpful, encouraging hint in UK English.
       `,
       output: {
         schema: GenerateGameOutputSchema,

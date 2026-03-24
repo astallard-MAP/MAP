@@ -37,7 +37,7 @@ export const AnalogueClock = () => {
   const hourDeg = (hours % 12) * 30 + minutes * 0.5;
 
   const day = time.getDate();
-  const dateStr = format(time, "EEEE ") + day + getOrdinalSuffix(day) + format(time, " MMMM yyyy");
+  const dateStr = format(time, "dd/MM/yyyy");
 
   return (
     <div className="flex flex-col items-center gap-2 select-none">

@@ -79,7 +79,7 @@ export function AuctionNews({ latestOnly = false }: AuctionNewsProps) {
               <div className="flex items-center gap-2 mt-2">
                 <Clock className="h-3 w-3 text-primary" />
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
-                  Published: {format(getSafeDate(latestArticle.publishedAt), 'd MMMM yyyy HH:mm')}
+                  Published: {format(getSafeDate(latestArticle.publishedAt), 'dd/MM/yyyy HH:mm')}
                 </p>
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
               </div>

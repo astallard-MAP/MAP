@@ -153,7 +153,7 @@ export default function AuctionCalendarPage() {
                                         <div className="flex items-center justify-between">
                                             <Badge variant="secondary" className="text-[9px] h-4 px-1">Fixed</Badge>
                                             <span className="text-[10px] font-mono font-bold text-muted-foreground">
-                                                {format(new Date(event.date), 'dd/MM/yy')}
+                                                {format(new Date(event.date), 'dd/MM/yyyy')}
                                             </span>
                                         </div>
                                     </div>

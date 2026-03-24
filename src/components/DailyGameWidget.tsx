@@ -21,11 +21,13 @@ export function DailyGameWidget() {
   const [game, setGame] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [userInput, setUserInput] = useState("");
+  const [gridInput, setGridInput] = useState<string[][]>(Array(4).fill(null).map(() => Array(4).fill("")));
   const [startTime, setStartTime] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
+  const [isBonus, setIsBonus] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -58,21 +60,58 @@ export function DailyGameWidget() {
   };
 
   const handleCheck = async () => {
-    if (!game || !userInput.trim()) return;
+    if (!game) return;
     
     setAttempts(prev => prev + 1);
     
-    // Normalisation Protocol: Strict whitespace and case matching
-    const normalisedInput = userInput.toLowerCase().replace(/\s+/g, '').trim();
-    
     let isCorrect = false;
+    let localIsBonus = false;
+
     if (game.type === 'Franagram') {
+        if (!userInput.trim()) return;
+        const normalisedInput = userInput.toLowerCase().replace(/\s+/g, '').trim();
         const normalisedSolution = game.solution.toLowerCase().replace(/\s+/g, '').trim();
         isCorrect = normalisedInput === normalisedSolution;
-    } else if (game.type === 'WordGrid' && Array.isArray(game.puzzle)) {
-        // Validation Forensic: Accept any word that appears in the 4x4 word square
-        // In a word square, the rows and columns are the same set of words.
-        isCorrect = game.puzzle.some((row: string) => row.toLowerCase().replace(/\s+/g, '').trim() === normalisedInput);
+    } else if (game.type === 'WordGrid') {
+        // Validation Forensic: Check if the 4x4 grid is a valid word square
+        // and uses the same letters as the reference.
+        const flatInput = gridInput.flat().join('').toLowerCase();
+        const flatSolution = game.solution.flat().join('').toLowerCase();
+        
+        // 1. Check if all cells filled
+        if (flatInput.length < 16) {
+             toast({ 
+                variant: "destructive", 
+                title: "Incomplete Grid", 
+                description: "Frank says: Every cell in the grid needs a letter, partner!" 
+            });
+            return;
+        }
+
+        // 2. Check if rows match columns (Word Square Identity)
+        let isWordSquare = true;
+        for (let i = 0; i < 4; i++) {
+            const row = gridInput[i].join('').toLowerCase();
+            const col = gridInput.map(r => r[i]).join('').toLowerCase();
+            if (row !== col) {
+                isWordSquare = false;
+                break;
+            }
+        }
+
+        // 3. Check letter pool (must use exact same letters)
+        const sortedInput = flatInput.split('').sort().join('');
+        const sortedSolution = flatSolution.split('').sort().join('');
+        const poolMatches = sortedInput === sortedSolution;
+
+        if (isWordSquare && poolMatches) {
+            isCorrect = true;
+            // 4. Check for Bonus (Unique Solution)
+            if (flatInput !== flatSolution) {
+                localIsBonus = true;
+                setIsBonus(true);
+            }
+        }
     }
 
     if (isCorrect) {
@@ -96,16 +135,35 @@ export function DailyGameWidget() {
       }
       
       toast({ 
-        title: "Brilliant!", 
-        description: `You solved Frank's challenge in ${(duration/1000).toFixed(3)}s!` 
+        title: localIsBonus ? "BONUS UNLOCKED!" : "Brilliant!", 
+        description: localIsBonus 
+            ? `Fantastic! A unique word square solution in ${(duration/1000).toFixed(3)}s!` 
+            : `You solved Frank's challenge in ${(duration/1000).toFixed(3)}s!` 
       });
       setIsSubmitting(false);
     } else {
       toast({ 
         variant: "destructive", 
         title: "Not quite, partner!", 
-        description: "Frank says: Check the spelling or try another word from the grid." 
+        description: game.type === 'Franagram' 
+            ? "Frank says: Check the spelling or try another combination." 
+            : "Frank says: The grid must be a word square (rows === columns) using today's letters."
       });
+    }
+  };
+
+  const updateGridInput = (r: number, c: number, val: string) => {
+    const newGrid = [...gridInput.map(row => [...row])];
+    newGrid[r][c] = val.slice(-1).toUpperCase();
+    setGridInput(newGrid);
+    
+    // Auto-focus next cell
+    if (val && c < 3) {
+        const next = document.getElementById(`grid-${r}-${c+1}`);
+        next?.focus();
+    } else if (val && c === 3 && r < 3) {
+        const next = document.getElementById(`grid-${r+1}-0`);
+        next?.focus();
     }
   };
 
@@ -113,17 +171,42 @@ export function DailyGameWidget() {
   if (!game) return null;
 
   const anagramText = game.type === 'Franagram' ? (game.puzzle.anagram || game.puzzle) : '';
+  
+  // UK Date/Time Helpers
+  const formatUKDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-');
+    return `${d}/${m}/${y}`;
+  };
+
+  const formatUKTime = () => {
+    return new Intl.DateTimeFormat('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'Europe/London'
+    }).format(new Date());
+  };
 
   return (
     <Card className="border-l-4 border-l-brand-secondary bg-gradient-to-br from-white to-brand-secondary/5 overflow-hidden shadow-md relative h-full">
+      {isRevealed && !solved && (
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1 scale-90 md:scale-100 rounded-full bg-brand-secondary/10 border border-brand-secondary/20 shadow-sm transition-all duration-300">
+             <div className="h-2 w-2 rounded-full bg-brand-secondary animate-pulse" />
+             <span className="text-[11px] font-mono font-bold text-brand-secondary tracking-tight">
+                {(currentTime/1000).toFixed(3)}s
+             </span>
+          </div>
+      )}
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle className="flex items-center gap-2 text-brand-secondary font-headline">
               <Gavel className="h-5 w-5" />
-              Franagram of the Day
+              {game.type} of the Day
             </CardTitle>
-            <CardDescription className="text-xs font-medium">Daily UK Property Brainteasers</CardDescription>
+            <CardDescription className="text-xs font-medium">
+                {formatUKDate(game.date)} | {formatUKTime()} GMT/BST
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Button 
@@ -202,37 +285,61 @@ export function DailyGameWidget() {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-4 gap-3 max-w-[240px] mx-auto">
-                      {(game.puzzle as string[]).map((row: string, i: number) => (
-                          <div key={i} className="contents">
-                              {row.split('').map((char, j) => (
-                                  <div key={`${i}-${j}`} className="w-12 h-12 flex items-center justify-center bg-white border-2 border-brand-secondary/30 rounded-md text-2xl font-black text-slate-900 shadow-sm transition-transform hover:scale-105 select-none">
-                                    {char.toUpperCase()}
-                                  </div>
-                              ))}
+                <div className="grid grid-cols-2 gap-8 items-start">
+                  <div className="space-y-3">
+                    <p className="text-[9px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Reference Letters</p>
+                    <div className="grid grid-cols-4 gap-1.5 p-3 bg-white/40 rounded-lg border border-brand-secondary/10">
+                        {game.solution.flat().join('').split('').sort(() => Math.random() - 0.5).map((char: string, i: number) => (
+                          <div key={i} className="w-10 h-10 flex items-center justify-center bg-white border border-brand-secondary/20 rounded-md text-xl font-black text-slate-700 select-none">
+                            {char.toUpperCase()}
                           </div>
-                      ))}
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <p className="text-[9px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Your Solution</p>
+                    <div className="grid grid-cols-4 gap-1.5 p-3 bg-white rounded-lg border-2 border-brand-secondary/30 shadow-inner">
+                        {gridInput.map((row, r) => (
+                            row.map((cell, c) => (
+                                <input
+                                    key={`${r}-${c}`}
+                                    id={`grid-${r}-${c}`}
+                                    className="w-10 h-10 text-center text-xl font-black text-slate-900 bg-slate-50 border border-slate-200 rounded-md focus:ring-2 focus:ring-brand-secondary focus:border-transparent outline-none transition-all"
+                                    value={cell}
+                                    maxLength={1}
+                                    onChange={(e) => updateGridInput(r, c, e.target.value)}
+                                    autoComplete="off"
+                                />
+                            ))
+                        ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
             
             <div className="flex flex-col gap-3">
-              <div className="flex gap-2">
-                <Input 
-                    placeholder="Your solution..." 
-                    className="h-11 font-bold text-center border-brand-secondary/30 focus:ring-brand-secondary bg-white shadow-sm"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
-                    autoComplete="off"
-                    autoCorrect="off"
-                />
-                <Button onClick={handleCheck} className="h-11 px-6 font-bold bg-brand-secondary hover:bg-brand-secondary/90 shadow-md transition-all active:scale-95" disabled={isSubmitting}>
-                    {isSubmitting ? <Loader2 className="animate-spin h-4 w-4" /> : "Check"}
+              {game.type === 'Franagram' ? (
+                <div className="flex gap-2">
+                    <Input 
+                        placeholder="Your solution..." 
+                        className="h-11 font-bold text-center border-brand-secondary/30 focus:ring-brand-secondary bg-white shadow-sm"
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
+                        autoComplete="off"
+                        autoCorrect="off"
+                    />
+                    <Button onClick={handleCheck} className="h-11 px-6 font-bold bg-brand-secondary hover:bg-brand-secondary/90 shadow-md transition-all active:scale-95" disabled={isSubmitting}>
+                        {isSubmitting ? <Loader2 className="animate-spin h-4 w-4" /> : "Check"}
+                    </Button>
+                </div>
+              ) : (
+                <Button onClick={handleCheck} className="h-12 w-full font-black text-lg bg-brand-secondary hover:bg-brand-secondary/90 shadow-lg transition-all active:scale-[0.98]" disabled={isSubmitting}>
+                    {isSubmitting ? <Loader2 className="animate-spin h-4 w-4" /> : "VERIFY WORD SQUARE"}
                 </Button>
-              </div>
+              )}
               
               <div className="flex items-center gap-2 p-2 rounded-md bg-white/50 border border-brand-secondary/10">
                 <Sparkles className="h-3 w-3 text-brand-secondary shrink-0" />
@@ -249,8 +356,13 @@ export function DailyGameWidget() {
               <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-20 -z-10 rounded-full" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Mission Accomplished!</h3>
-              <p className="text-xs text-muted-foreground font-medium">Verified Time: <span className="text-brand-secondary font-bold">{(currentTime/1000).toFixed(3)}s</span></p>
+              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">
+                {isBonus ? "Bonus Achievement!" : "Mission Accomplished!"}
+              </h3>
+              <p className="text-xs text-muted-foreground font-medium">
+                {isBonus ? "You discovered an alternative word square! " : ""}
+                Verified Time: <span className="text-brand-secondary font-bold">{(currentTime/1000).toFixed(3)}s</span>
+              </p>
             </div>
             
             <div className="w-full bg-slate-50/50 rounded-lg border border-brand-secondary/10 p-4">
