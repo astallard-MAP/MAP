@@ -75,8 +75,13 @@ export function DailyGameWidget() {
     } else if (game.type === 'WordGrid') {
         // Validation Forensic: Check if the 4x4 grid is a valid word square
         // and uses the same letters as the reference.
+        // Forensic: Handle legacy string solutions or unexpected formats
+        const isArraySolution = Array.isArray(game.solution);
+        const flatSolution = isArraySolution 
+            ? game.solution.flat().join('').toLowerCase() 
+            : String(game.solution).replace(/\s+/g, '').toLowerCase();
+
         const flatInput = gridInput.flat().join('').toLowerCase();
-        const flatSolution = game.solution.flat().join('').toLowerCase();
         
         // 1. Check if all cells filled
         if (flatInput.length < 16) {
@@ -255,7 +260,7 @@ export function DailyGameWidget() {
                     <h3 className="text-lg font-bold text-slate-900">Today's Frank-a-gram is Locked</h3>
                     <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2">
                         Today Frank has set a {game.type} puzzle. The timer starts exactly when you reveal the puzzle. 
-                        Players are ranked by their accuracy and speed to one-thousandth of a second.
+                        Players are ranked by their accuracy and speed.
                     </p>
                 </div>
                 <Button 
@@ -289,7 +294,7 @@ export function DailyGameWidget() {
                   <div className="space-y-3">
                     <p className="text-[9px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Reference Letters</p>
                     <div className="grid grid-cols-4 gap-1.5 p-3 bg-white/40 rounded-lg border border-brand-secondary/10">
-                        {game.solution.flat().join('').split('').sort(() => Math.random() - 0.5).map((char: string, i: number) => (
+                        {(Array.isArray(game.solution) ? game.solution.flat().join('') : String(game.solution)).split('').sort(() => Math.random() - 0.5).map((char: string, i: number) => (
                           <div key={i} className="w-10 h-10 flex items-center justify-center bg-white border border-brand-secondary/20 rounded-md text-xl font-black text-slate-700 select-none">
                             {char.toUpperCase()}
                           </div>
