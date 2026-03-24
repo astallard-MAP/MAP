@@ -19,11 +19,25 @@ export async function getDailyGame(suggestedType?: string) {
       const data = gameDoc.data();
       if (!data) throw new Error("Audit Failure: Game record corrupted.");
       
-      // Forensic: Serialize to plain object to prevent "Classes or null prototypes are not supported" error
-      return { 
-        success: true, 
-        data: JSON.parse(JSON.stringify(data)) 
-      };
+      // Forensic: Validate WordGrid integrity. If legacy (string solution or < 16 chars), regenerate.
+      if (data.type === 'WordGrid') {
+          const solution = data.solution;
+          const flatChars = Array.isArray(solution) ? solution.flat().join('') : String(solution);
+          if (flatChars.length < 16) {
+              console.warn("Legacy/Corrupted WordGrid detected. Initiating regeneration protocol...");
+              await firestore.collection('dailyGames').doc(today).delete();
+          } else {
+              return { 
+                success: true, 
+                data: JSON.parse(JSON.stringify(data)) 
+              };
+          }
+      } else {
+          return { 
+            success: true, 
+            data: JSON.parse(JSON.stringify(data)) 
+          };
+      }
     }
 
     // AI Generation

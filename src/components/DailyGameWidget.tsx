@@ -296,29 +296,30 @@ export function DailyGameWidget() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-                  <div className="space-y-3 w-fit">
-                    <p className="text-[9px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Reference Letters</p>
-                    <div className="grid grid-cols-4 gap-2 p-3 bg-slate-100 rounded-lg border-2 border-slate-200 w-fit">
+                <div className="flex flex-col md:flex-row gap-8 justify-center items-center pb-2">
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Reference Letters</p>
+                    {/* Fixed 180px width (40px*4 + 2px*3 gap + 24px padding) */}
+                    <div className="grid grid-cols-4 gap-2 p-4 bg-slate-50 rounded-xl border-2 border-slate-200 shadow-sm w-[200px] h-[200px]">
                         {scrambledPool.map((char: string, i: number) => (
-                          <div key={i} className="w-10 h-10 flex items-center justify-center bg-white border border-slate-300 rounded shadow-sm text-xl font-black text-slate-700 select-none">
+                          <div key={i} className="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded text-xl font-black text-slate-800 select-none shadow-sm">
                             {char.toUpperCase()}
                           </div>
                         ))}
                     </div>
                   </div>
 
-                  <div className="hidden md:block h-32 w-px bg-slate-200 mx-2" />
+                  <div className="hidden md:block h-24 w-px bg-slate-200" />
 
-                  <div className="space-y-3 w-fit">
-                    <p className="text-[9px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Your Solution</p>
-                    <div className="grid grid-cols-4 gap-2 p-3 bg-white rounded-lg border-2 border-brand-secondary/40 shadow-xl w-fit">
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-bold uppercase tracking-thicker text-muted-foreground text-center">Your Solution</p>
+                    <div className="grid grid-cols-4 gap-2 p-4 bg-white rounded-xl border-2 border-brand-secondary/40 shadow-xl w-[200px] h-[200px]">
                         {gridInput.map((row, r) => (
                             row.map((cell, c) => (
                                 <input
                                     key={`${r}-${c}`}
                                     id={`grid-${r}-${c}`}
-                                    className="w-10 h-10 text-center text-xl font-black text-slate-900 bg-slate-50 border border-slate-200 rounded focus:ring-2 focus:ring-brand-secondary focus:border-transparent outline-none transition-all shadow-inner"
+                                    className="w-10 h-10 text-center text-xl font-black text-slate-900 bg-slate-50 border border-slate-200 rounded focus:ring-2 focus:ring-brand-secondary focus:border-transparent outline-none transition-all shadow-inner uppercase"
                                     value={cell}
                                     maxLength={1}
                                     onChange={(e) => updateGridInput(r, c, e.target.value)}
