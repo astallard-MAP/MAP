@@ -10,5 +10,8 @@ export async function initializeAdminApp() {
         return getApps()[0];
     }
     // Returns the initialized app instance
-    return initializeApp(); 
+    return initializeApp({
+        projectId: 'map261125',
+        storageBucket: 'map261125.firebasestorage.app'
+    }); 
 }

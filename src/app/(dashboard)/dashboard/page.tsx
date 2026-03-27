@@ -29,13 +29,15 @@ import {
   Award,
   UserCog,
   History,
-  Clock
+  Clock,
+  PoundSterling
 } from "lucide-react"
 import { Button } from "../../../components/ui/button"
 import Link from "next/link"
 import { useUser, useCollection, useFirestore, useMemoFirebase, useDoc } from "../../../firebase";
 import { AddAgencyDialog } from "../../../components/AddAgencyDialog";
 import { Organisation, Property, PublicUserProfile, AuctionEvent, AccessRequest, Suggestion } from "../../../lib/types";
+import { SystemAuditLogs } from "../../../components/SystemAuditLogs";
 import {
   Table,
   TableBody,
@@ -165,7 +167,7 @@ const TasksCard = ({ tasks }: { tasks: any[] }) => {
 
 export default function DashboardPage() {
   const { userProfile, isProfileLoaded } = useUser();
-  const { isPermissionsLoaded, isAdmin, isAgencyOwner } = usePermissions();
+  const { isPermissionsLoaded, isAdmin, isAgencyOwner, isGlobalAdmin } = usePermissions();
   const firestore = useFirestore();
   const { toast } = useToast();
   
@@ -402,6 +404,38 @@ export default function DashboardPage() {
           </div>
         </header>
 
+        {/* REINSTATED GLOBAL PRODUCTION KPIs */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-brand-primary transition-all">
+                <div className="flex items-center gap-2 text-slate-400 group-hover:text-brand-primary transition-colors">
+                    <Gavel className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Auctions Held</span>
+                </div>
+                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.auctionsHeld}</div>
+            </div>
+            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-brand-secondary transition-all">
+                <div className="flex items-center gap-2 text-slate-400 group-hover:text-brand-secondary transition-colors">
+                    <Building className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Properties Sold</span>
+                </div>
+                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.propertiesSold}</div>
+            </div>
+            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-emerald-500 transition-all">
+                <div className="flex items-center gap-2 text-slate-400 group-hover:text-emerald-500 transition-colors">
+                    <TrendingUp className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Success Rate</span>
+                </div>
+                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.successRate}%</div>
+            </div>
+            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-blue-600 transition-all">
+                <div className="flex items-center gap-2 text-slate-400 group-hover:text-blue-600 transition-colors">
+                    <PoundSterling className="h-4 w-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Total Raised</span>
+                </div>
+                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">£128.5m</div>
+            </div>
+        </div>
+
         {/* ROLE-SPECIFIC DASHBOARD INJECTION */}
         {renderTailoredDashboard()}
 
@@ -413,19 +447,25 @@ export default function DashboardPage() {
            <AuctionNews latestOnly={true} />
         </div>
 
-        {/* SYSTEM TOOLS (Admin Only) */}
+        {/* SYSTEM TOOLS (Admin / Global Admin Access) */}
         {isAdmin && (
             <div className="grid gap-6 lg:grid-cols-3 mt-8">
                 <AdminToolsCard />
                 <SuggestionBox />
-                <Card className="shadow-sm border border-slate-200 bg-slate-50 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed">
-                    <CardHeader className="pb-3 border-b">
-                        <CardTitle className="text-sm font-bold uppercase flex items-center"><History className="mr-2 h-4 w-4" /> System Audit Logs</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-4 px-8 text-center py-12">
-                        <p className="text-xs font-bold text-slate-400">Restricted to Root Administrator</p>
-                    </CardContent>
-                </Card>
+                {isGlobalAdmin ? (
+                    <div className="lg:col-span-1">
+                        <SystemAuditLogs />
+                    </div>
+                ) : (
+                    <Card className="shadow-sm border border-slate-200 bg-slate-50 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed">
+                        <CardHeader className="pb-3 border-b">
+                            <CardTitle className="text-sm font-bold uppercase flex items-center"><History className="mr-2 h-4 w-4" /> System Audit Logs</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-4 px-8 text-center py-12">
+                            <p className="text-xs font-bold text-slate-400">Restricted to Root Administrator</p>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         )}
       </div>

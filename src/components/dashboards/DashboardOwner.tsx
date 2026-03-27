@@ -10,13 +10,16 @@ import { Switch } from "../ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { 
   TrendingUp, 
-  DollarSign, 
+  PoundSterling, 
   BarChart3, 
   ShieldCheck, 
   Users, 
   Eye,
   Building2,
-  PieChart
+  PieChart,
+  Gavel,
+  CheckCircle2,
+  Award
 } from "lucide-react";
 import { type UserProfile } from "../../lib/types";
 
@@ -40,41 +43,41 @@ export function DashboardOwner({ userProfile }: { userProfile: UserProfile }) {
         </div>
       </div>
 
-      {/* CORE KPIs */}
+      {/* CORE KPIs - REINSTATED DEFINITIVE PRODUCTION STATS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-l-4 border-l-green-500 shadow-sm">
+        <Card className="border-l-4 border-l-brand-primary shadow-sm bg-brand-primary/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-bold uppercase">Total Revenue (YTD)</CardDescription>
-            <CardTitle className="text-2xl font-black flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-green-500" />
-              £142,500
+            <CardDescription className="text-[10px] font-bold uppercase text-brand-primary opacity-60">Auctions Held</CardDescription>
+            <CardTitle className="text-3xl font-black flex items-center gap-2 text-slate-900">
+              <Gavel className="h-5 w-5 text-brand-primary" />
+              97
             </CardTitle>
           </CardHeader>
         </Card>
-        <Card className="border-l-4 border-l-brand-primary shadow-sm">
+        <Card className="border-l-4 border-l-brand-secondary shadow-sm bg-brand-secondary/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-bold uppercase">Auction Conversion</CardDescription>
-            <CardTitle className="text-2xl font-black flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-brand-primary" />
-              78.4%
+            <CardDescription className="text-[10px] font-bold uppercase text-brand-secondary opacity-60">Properties Sold</CardDescription>
+            <CardTitle className="text-3xl font-black flex items-center gap-2 text-slate-900">
+              <CheckCircle2 className="h-5 w-5 text-brand-secondary" />
+              661
             </CardTitle>
           </CardHeader>
         </Card>
-        <Card className="border-l-4 border-l-brand-secondary shadow-sm">
+        <Card className="border-l-4 border-l-emerald-500 shadow-sm bg-emerald-50/50">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-bold uppercase">Market Share</CardDescription>
-            <CardTitle className="text-2xl font-black flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-brand-secondary" />
-                12 active lots
+            <CardDescription className="text-[10px] font-bold uppercase text-emerald-600 opacity-60">Success Rate (%)</CardDescription>
+            <CardTitle className="text-3xl font-black flex items-center gap-2 text-slate-900">
+              <TrendingUp className="h-5 w-5 text-emerald-500" />
+              72%
             </CardTitle>
           </CardHeader>
         </Card>
-        <Card className="border-l-4 border-l-purple-500 shadow-sm">
+        <Card className="border-l-4 border-l-blue-600 shadow-sm bg-blue-50/50">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] font-bold uppercase">Compliance Score</CardDescription>
-            <CardTitle className="text-2xl font-black flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-purple-500" />
-              98%
+            <CardDescription className="text-[10px] font-bold uppercase text-blue-600 opacity-60">Total Raised (GBP)</CardDescription>
+            <CardTitle className="text-2xl font-black flex items-center gap-2 text-slate-900">
+              <PoundSterling className="h-5 w-5 text-blue-600" />
+              128.5m
             </CardTitle>
           </CardHeader>
         </Card>
