@@ -205,6 +205,32 @@ export interface ComplaintResponse {
     isInternalOnly: boolean; // For private staff notes/AI suggestions
     createdAt: any;
 }
+export interface AmlCase {
+    id: string;
+    amlRef: string; // Unique Identifier (e.g. AML-2026-X)
+    type: 'Vendor CDD' | 'Buyer CDD' | 'Suspicious Activity' | 'Sanctions Match';
+    subjectName: string;
+    subjectId?: string; // Link to user or property
+    riskRating: 'Low' | 'Medium' | 'High';
+    isPep: boolean;
+    status: 'Pending' | 'In Review' | 'Approved' | 'Rejected' | 'SAR Filed';
+    assignedTo?: string; // MLRO / MLCO name
+    evidenceUrls?: string[]; // Links to ID/Bank Statements
+    aiRiskAnalysis?: string;
+    proceduralChecklist?: string[];
+    actions: AmlAction[];
+    createdAt: any;
+    updatedAt: any;
+    closedAt?: any;
+}
+
+export interface AmlAction {
+    id: string;
+    authorName: string;
+    description: string;
+    isInternalOnly: boolean;
+    createdAt: any;
+}
 
 export interface AuctionHistoryItem {
   date: string;

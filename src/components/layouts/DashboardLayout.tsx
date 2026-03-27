@@ -23,7 +23,9 @@ import {
   FileSearch,
   Wrench,
   History,
-  LifeBuoy
+  LifeBuoy,
+  Fingerprint,
+  ShieldAlert
 } from "lucide-react";
 import {
   SidebarProvider,
@@ -109,6 +111,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       { name: "Access Requests", href: "/dashboard/access-requests", icon: UserPlus2 },
       { name: "Document Templates", href: "/dashboard/document-management", icon: FileText },
       { name: "Complaints Register", href: "/dashboard/complaints", icon: ShieldCheck },
+      { name: "AML Register", href: "/dashboard/aml", icon: Fingerprint },
     ];
   }, [isAdmin]);
 
