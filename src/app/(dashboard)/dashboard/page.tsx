@@ -390,6 +390,39 @@ export default function DashboardPage() {
                 </p>
              </div>
           </div>
+          <div className="flex flex-1 items-center justify-center">
+            <div className="grid grid-cols-2 gap-x-12 gap-y-2 border-x px-12 border-slate-100">
+                <div className="flex items-center gap-3 group">
+                    <Gavel className="h-4 w-4 text-brand-primary group-hover:scale-110 transition-transform" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-400 leading-none">Auctions Held</span>
+                        <span className="text-lg font-black text-slate-900 tracking-tighter leading-none mt-1">{kpis.auctionsHeld}</span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 group">
+                    <Building className="h-4 w-4 text-brand-secondary group-hover:scale-110 transition-transform" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-400 leading-none">Properties Sold</span>
+                        <span className="text-lg font-black text-slate-900 tracking-tighter leading-none mt-1">{kpis.propertiesSold}</span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 group">
+                    <TrendingUp className="h-4 w-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-400 leading-none">Success Rate</span>
+                        <span className="text-lg font-black text-slate-900 tracking-tighter leading-none mt-1">{kpis.successRate}%</span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3 group">
+                    <PoundSterling className="h-4 w-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black uppercase tracking-tighter text-slate-400 leading-none">Total Raised</span>
+                        <span className="text-lg font-black text-slate-900 tracking-tighter leading-none mt-1">£128.5m</span>
+                    </div>
+                </div>
+            </div>
+          </div>
+
           <div className="flex items-center gap-8">
             <div className="flex flex-col items-end border-r pr-8 border-slate-200">
                 <div className="flex items-center gap-2 text-brand-primary">
@@ -404,37 +437,6 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* REINSTATED GLOBAL PRODUCTION KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
-            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-brand-primary transition-all">
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-brand-primary transition-colors">
-                    <Gavel className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Auctions Held</span>
-                </div>
-                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.auctionsHeld}</div>
-            </div>
-            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-brand-secondary transition-all">
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-brand-secondary transition-colors">
-                    <Building className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Properties Sold</span>
-                </div>
-                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.propertiesSold}</div>
-            </div>
-            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-emerald-500 transition-all">
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-emerald-500 transition-colors">
-                    <TrendingUp className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Success Rate</span>
-                </div>
-                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">{kpis.successRate}%</div>
-            </div>
-            <div className="flex flex-col border-l-2 pl-6 border-slate-200 group hover:border-blue-600 transition-all">
-                <div className="flex items-center gap-2 text-slate-400 group-hover:text-blue-600 transition-colors">
-                    <PoundSterling className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest leading-none">Total Raised</span>
-                </div>
-                <div className="text-3xl font-black text-slate-900 tracking-tighter mt-1">£128.5m</div>
-            </div>
-        </div>
 
         {/* ROLE-SPECIFIC DASHBOARD INJECTION */}
         {renderTailoredDashboard()}
