@@ -9,7 +9,7 @@ import { generateQuizFlow } from "@/ai/flows/generate-quiz-flow";
  * Retrieves Frank's Game of the Day.
  * Randomly selects between Franagram, WordGrid, or Regulatory Quiz once per day.
  */
-export async function getFrankGameOfTheDay() {
+export async function getFrankGameOfTheDay(suggestedType?: 'Franagram' | 'WordGrid' | 'Quiz') {
   try {
     const app = await initializeAdminApp();
     const firestore = getFirestore(app);
@@ -17,26 +17,29 @@ export async function getFrankGameOfTheDay() {
 
     // Priority 1: Check if a Frank Game already exists for today
     const gameDoc = await firestore.collection('dailyFrankGames').doc(today).get();
-    if (gameDoc.exists) {
+    if (gameDoc.exists && !suggestedType) {
       return { 
         success: true, 
         data: JSON.parse(JSON.stringify({ ...gameDoc.data(), id: today })) 
       };
     }
 
-    // Priority 2: Randomly select a game type
-    // Types: 0 = Franagram, 1 = WordGrid, 2 = Quiz
-    const gameTypeInt = Math.floor(Math.random() * 3);
+    // Priority 2: Select a game type
+    let finalType = suggestedType;
+    if (!finalType) {
+        const gameTypeInt = Math.floor(Math.random() * 3);
+        finalType = gameTypeInt === 2 ? 'Quiz' : (gameTypeInt === 0 ? 'Franagram' : 'WordGrid');
+    }
+
     let newGame: any;
 
-    if (gameTypeInt === 2) {
+    if (finalType === 'Quiz') {
       // Generate a Quiz
       const quiz = await generateQuizFlow({});
       newGame = { ...quiz, type: 'Quiz' };
     } else {
       // Generate a puzzle (Franagram or WordGrid)
-      const puzzleType = gameTypeInt === 0 ? 'Franagram' : 'WordGrid';
-      const puzzle = await generateDailyGame({ gameType: puzzleType as any });
+      const puzzle = await generateDailyGame({ gameType: finalType as any });
       newGame = puzzle;
     }
 

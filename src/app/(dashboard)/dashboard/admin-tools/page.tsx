@@ -14,7 +14,7 @@ import { ArrowLeft, Loader2, Rss, MailCheck, Trash2, ShieldAlert, Gamepad2, Brai
 import { useRouter } from "next/navigation";
 import { usePermissions } from "../../../../context/PermissionContext";
 import { summariseAndSaveNews, syncUsersToMailchimp, wipePortalData } from "../../../../app/actions/server-actions";
-import { getDailyGame } from "../../../../app/actions/game-actions";
+import { getFrankGameOfTheDay } from "../../../../app/actions/game-actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,7 +62,7 @@ export default function AdminToolsPage() {
   const handleGenerateGame = async () => {
     setIsGeneratingGame(true);
     try {
-      const res = await getDailyGame(suggestedGame);
+      const res = await getFrankGameOfTheDay(suggestedGame as any);
       if (res.success) {
         toast({ title: "Frank says: Game Generated!", description: `New ${suggestedGame} published for today.` });
       } else {
@@ -152,6 +152,7 @@ export default function AdminToolsPage() {
               <SelectContent>
                 <SelectItem value="Franagram">Franagram (Anagram)</SelectItem>
                 <SelectItem value="WordGrid">Word Grid (Sudoku Style)</SelectItem>
+                <SelectItem value="Quiz">Regulatory Quiz</SelectItem>
               </SelectContent>
             </Select>
             <Button onClick={handleGenerateGame} disabled={isGeneratingGame} variant="secondary" className="w-full font-bold border-2 border-brand-secondary/20">

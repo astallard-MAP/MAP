@@ -13,7 +13,7 @@ import { collection, query, orderBy, Timestamp } from "firebase/firestore";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { MMOA_SALES_AGREEMENT_TEMPLATE } from "@/lib/agreements";
+import { MMOA_SALES_AGREEMENT_TEMPLATE, TERMS_OF_BIDDING_TEMPLATE } from "@/lib/agreements";
 
 import {
   DropdownMenu,
@@ -41,14 +41,12 @@ export default function DocumentManagementPage() {
   const { data: templates, isLoading: templatesLoading } = useCollection<SolicitorDocument>(templatesQuery);
 
   const displayTemplates = useMemo(() => {
-    if (!templates) return [MMOA_SALES_AGREEMENT_TEMPLATE];
+    const systemTemplates = [MMOA_SALES_AGREEMENT_TEMPLATE, TERMS_OF_BIDDING_TEMPLATE];
+    if (!templates) return systemTemplates;
     
-    // Merge system template if not already in Firestore (by ID)
-    const hasMmoa = templates.some(t => t.id === MMOA_SALES_AGREEMENT_TEMPLATE.id);
-    if (!hasMmoa) {
-        return [MMOA_SALES_AGREEMENT_TEMPLATE, ...templates];
-    }
-    return templates;
+    // Merge system templates if not already in Firestore (by ID)
+    const filteredSystem = systemTemplates.filter(sys => !templates.some(t => t.id === sys.id));
+    return [...filteredSystem, ...templates];
   }, [templates]);
 
   const formatSafeDate = (val: any) => {
