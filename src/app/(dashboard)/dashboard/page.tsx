@@ -449,12 +449,14 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 grid gap-6">
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    <TasksCard tasks={tasks} />
-                    <FrankGameOfTheDayWidget />
-                </div>
-                <Card>
+          <TasksCard tasks={tasks} />
+          <FrankGameOfTheDayWidget />
+          <AuctionNews latestOnly={true} />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+                <Card className="h-full border-l-4 border-l-primary shadow-sm">
                     <CardHeader className="pb-3 border-b bg-muted/5">
                         <CardTitle className="text-sm font-bold uppercase tracking-widest flex items-center">
                             <TrendingUp className="mr-2 h-4 w-4 text-primary"/> Recently Approved Lots
@@ -504,7 +506,6 @@ export default function DashboardPage() {
             </div>
             
             <div className="space-y-6">
-                <AuctionNews latestOnly={true} />
                 <SuggestionBox />
                 {isAdmin && <AdminToolsCard />}
             </div>
