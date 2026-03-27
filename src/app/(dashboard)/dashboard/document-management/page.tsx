@@ -12,7 +12,8 @@ import { FileText, Plus, FileEdit, ArrowLeft, Loader2, Mail, Gavel } from "lucid
 import { collection, query, orderBy, Timestamp } from "firebase/firestore";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Badge } from "../../../../components/ui/badge";
+import { Badge } from "@/components/ui/badge";
+import { MMOA_SALES_AGREEMENT_TEMPLATE } from "@/lib/agreements";
 
 import {
   DropdownMenu,
@@ -22,7 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
 export default function DocumentManagementPage() {
@@ -38,6 +39,17 @@ export default function DocumentManagementPage() {
   }, [firestore, isAdmin]);
 
   const { data: templates, isLoading: templatesLoading } = useCollection<SolicitorDocument>(templatesQuery);
+
+  const displayTemplates = useMemo(() => {
+    if (!templates) return [MMOA_SALES_AGREEMENT_TEMPLATE];
+    
+    // Merge system template if not already in Firestore (by ID)
+    const hasMmoa = templates.some(t => t.id === MMOA_SALES_AGREEMENT_TEMPLATE.id);
+    if (!hasMmoa) {
+        return [MMOA_SALES_AGREEMENT_TEMPLATE, ...templates];
+    }
+    return templates;
+  }, [templates]);
 
   const formatSafeDate = (val: any) => {
     if (!val) return '-';
@@ -160,8 +172,8 @@ export default function DocumentManagementPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {templates && templates.length > 0 ? (
-                templates.map((template) => (
+              {displayTemplates.length > 0 ? (
+                displayTemplates.map((template) => (
                   <TableRow key={template.id}>
                     <TableCell className="font-bold text-slate-900">{template.title}</TableCell>
                     <TableCell>

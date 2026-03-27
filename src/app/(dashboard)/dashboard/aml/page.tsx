@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ShieldAlert, Fingerprint, ArrowLeft, History, FileWarning, Search, Plus } from "lucide-react";
+import { Loader2, ShieldAlert, ShieldCheck, Fingerprint, ArrowLeft, History, FileWarning, Search, Plus } from "lucide-react";
 import Link from "next/link";
 import { AmlCase } from "@/lib/types";
 
@@ -179,9 +179,11 @@ export default function AmlRegisterPage() {
         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
             <FileWarning className="h-3 w-3" /> CONFIDENTIAL: Access restricted to MLRO/MLCO
         </p>
-        <Link href="/.agents/workflows/aml-compliance.md" className="text-[10px] font-bold uppercase flex items-center gap-1 hover:text-primary">
-            <History className="h-3 w-3" /> View Procedural Workflow
+      <div className="flex justify-end gap-2 opacity-60">
+        <Link href="/dashboard/workflows/aml-compliance" className="text-[10px] font-bold uppercase flex items-center gap-1 hover:text-primary">
+            <ShieldCheck className="h-3 w-3" /> View Procedural Workflow
         </Link>
+      </div>
       </div>
     </div>
   );

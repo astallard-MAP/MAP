@@ -162,7 +162,7 @@ export default function ComplaintsRegisterPage() {
       </Card>
       
       <div className="flex justify-end gap-2 opacity-60">
-        <Link href="/.agents/workflows/complaints-handling.md" className="text-[10px] font-bold uppercase flex items-center gap-1 hover:text-primary">
+        <Link href="/dashboard/workflows/complaints-handling" className="text-[10px] font-bold uppercase flex items-center gap-1 hover:text-primary">
             <FileText className="h-3 w-3" /> View Procedural Workflow
         </Link>
       </div>

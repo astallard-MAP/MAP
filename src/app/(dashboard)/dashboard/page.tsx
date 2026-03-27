@@ -54,8 +54,7 @@ import { AuctionNews } from "../../../components/AuctionNews";
 import { OFFICIAL_AUCTION_DATES } from "../../../lib/constants";
 import { isAfter, format } from "date-fns";
 import { AnalogueClock } from "../../../components/AnalogueClock";
-import { DailyGameWidget } from "../../../components/DailyGameWidget";
-import { DailyQuizWidget } from "../../../components/DailyQuizWidget";
+import { FrankGameOfTheDayWidget } from "../../../components/FrankGameOfTheDayWidget";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",
@@ -453,8 +452,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-2 grid gap-6">
                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     <TasksCard tasks={tasks} />
-                    <DailyGameWidget />
-                    <DailyQuizWidget />
+                    <FrankGameOfTheDayWidget />
                 </div>
                 <Card>
                     <CardHeader className="pb-3 border-b bg-muted/5">

@@ -3,47 +3,42 @@
 import { initializeAdminApp } from "@/firebase/server-init";
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { generateDailyGame } from "@/ai/flows/generate-game-flow";
+import { generateQuizFlow } from "@/ai/flows/generate-quiz-flow";
 
 /**
- * Retrieves the daily puzzle for the portal.
- * Clinicaly serializes data to satisfy Next.js Server-to-Client object protocols.
+ * Retrieves Frank's Game of the Day.
+ * Randomly selects between Franagram, WordGrid, or Regulatory Quiz once per day.
  */
-export async function getDailyGame(suggestedType?: string) {
+export async function getFrankGameOfTheDay() {
   try {
     const app = await initializeAdminApp();
     const firestore = getFirestore(app);
     const today = new Date().toISOString().split('T')[0];
 
-    const gameDoc = await firestore.collection('dailyGames').doc(today).get();
+    // Priority 1: Check if a Frank Game already exists for today
+    const gameDoc = await firestore.collection('dailyFrankGames').doc(today).get();
     if (gameDoc.exists) {
-      const data = gameDoc.data();
-      if (!data) throw new Error("Audit Failure: Game record corrupted.");
-      
-      // Forensic: Validate WordGrid integrity. If legacy (string solution or < 16 chars), regenerate.
-      if (data.type === 'WordGrid') {
-          const solution = data.solution;
-          const flatChars = Array.isArray(solution) ? solution.flat().join('') : String(solution);
-          if (flatChars.length < 16) {
-              console.warn("Legacy/Corrupted WordGrid detected. Initiating regeneration protocol...");
-              await firestore.collection('dailyGames').doc(today).delete();
-          } else {
-              return { 
-                success: true, 
-                data: JSON.parse(JSON.stringify(data)) 
-              };
-          }
-      } else {
-          return { 
-            success: true, 
-            data: JSON.parse(JSON.stringify(data)) 
-          };
-      }
+      return { 
+        success: true, 
+        data: JSON.parse(JSON.stringify({ ...gameDoc.data(), id: today })) 
+      };
     }
 
-    // AI Generation
-    const newGame = await generateDailyGame({ 
-        gameType: suggestedType as any 
-    });
+    // Priority 2: Randomly select a game type
+    // Types: 0 = Franagram, 1 = WordGrid, 2 = Quiz
+    const gameTypeInt = Math.floor(Math.random() * 3);
+    let newGame: any;
+
+    if (gameTypeInt === 2) {
+      // Generate a Quiz
+      const quiz = await generateQuizFlow({});
+      newGame = { ...quiz, type: 'Quiz' };
+    } else {
+      // Generate a puzzle (Franagram or WordGrid)
+      const puzzleType = gameTypeInt === 0 ? 'Franagram' : 'WordGrid';
+      const puzzle = await generateDailyGame({ gameType: puzzleType as any });
+      newGame = puzzle;
+    }
 
     const payload = {
       ...newGame,
@@ -51,155 +46,86 @@ export async function getDailyGame(suggestedType?: string) {
       createdAt: FieldValue.serverTimestamp(),
     };
 
-    await firestore.collection('dailyGames').doc(today).set(payload);
+    await firestore.collection('dailyFrankGames').doc(today).set(payload);
 
     return { 
       success: true, 
-      data: JSON.parse(JSON.stringify({ ...newGame, date: today })) 
+      data: JSON.parse(JSON.stringify({ ...newGame, date: today, id: today })) 
     };
   } catch (error: any) {
-    console.error("Game Retrieval Failure:", error.message);
+    console.error("Frank's Game Retrieval Failure:", error.message);
     return { success: false, error: error.message };
   }
 }
 
 /**
- * Submits a game result and updates user ranking telemetry.
+ * Submits results for Frank's Game of the Day.
+ * Standardizes ranking points and streak telemetry.
  */
-export async function submitGameResult(userId: string, userName: string, gameId: string, timeMs: number, attempts: number) {
-  try {
-    const app = await initializeAdminApp();
-    const firestore = getFirestore(app);
+export async function submitFrankGameResult(params: {
+    userId: string;
+    userName: string;
+    gameId: string;
+    type: 'Franagram' | 'WordGrid' | 'Quiz';
+    timeMs?: number;
+    attempts?: number;
+    isCorrect?: boolean;
+}) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        const { userId, userName, gameId, type, timeMs, attempts, isCorrect } = params;
 
-    const resultRef = firestore.collection('gameResults').doc();
-    await resultRef.set({
-      userId,
-      userName,
-      gameId,
-      timeTakenMs: timeMs,
-      attempts,
-      submittedAt: FieldValue.serverTimestamp(),
-    });
+        const resultRef = firestore.collection('frankGameResults').doc(`${userId}_${gameId}`);
+        await resultRef.set({
+            userId,
+            userName,
+            gameId,
+            type,
+            timeTakenMs: timeMs || 0,
+            attempts: attempts || 1,
+            isCorrect: isCorrect ?? true, // For puzzles, correctness is implied by submission
+            submittedAt: FieldValue.serverTimestamp(),
+        });
 
-    const userRef = firestore.collection('users').doc(userId);
-    const userSnap = await userRef.get();
-    const userData = userSnap.data();
-    
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    
-    let newStreak = 1;
-    if (userData?.lastGameDate === yesterday) {
-      newStreak = (userData.winningStreak || 0) + 1;
-    }
-
-    await userRef.update({
-      rankingPoints: FieldValue.increment(10),
-      winningStreak: newStreak,
-      lastGameDate: today,
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-
-    return { success: true, streak: newStreak };
-  } catch (error: any) {
-    return { success: false, error: error.message };
-  }
-}
-
-/**
- * Retrieves the leaderboard for a specific game, sorted by time taken.
- */
-export async function getGameLeaderboard(gameId: string) {
-  try {
-    const app = await initializeAdminApp();
-    const firestore = getFirestore(app);
-
-    const snapshot = await firestore.collection('gameResults')
-      .where('gameId', '==', gameId)
-      .orderBy('timeTakenMs', 'asc')
-      .limit(10)
-      .get();
-
-    const results = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    return { success: true, data: JSON.parse(JSON.stringify(results)) };
-  } catch (error: any) {
-    console.error("Leaderboard Retrieval Failure:", error.message);
-    return { success: false, error: error.message };
-  }
-}
-import { generateQuizFlow } from "@/ai/flows/generate-quiz-flow";
-
-/**
- * Retrieves the daily quiz for the portal.
- * UK-EN: Focuses on professional regulatory knowledge.
- */
-export async function getDailyQuiz() {
-  try {
-    const app = await initializeAdminApp();
-    const firestore = getFirestore(app);
-    const today = new Date().toISOString().split('T')[0];
-
-    const quizDoc = await firestore.collection('dailyQuizzes').doc(today).get();
-    if (quizDoc.exists) {
-        return { 
-          success: true, 
-          data: JSON.parse(JSON.stringify({ ...quizDoc.data(), id: today })) 
-        };
-    }
-
-    // AI Generation
-    const newQuiz = await generateQuizFlow({});
-
-    const payload = {
-      ...newQuiz,
-      date: today,
-      createdAt: FieldValue.serverTimestamp(),
-    };
-
-    await firestore.collection('dailyQuizzes').doc(today).set(payload);
-
-    return { 
-      success: true, 
-      data: JSON.parse(JSON.stringify({ ...newQuiz, date: today, id: today })) 
-    };
-  } catch (error: any) {
-    console.error("Quiz Retrieval Failure:", error.message);
-    return { success: false, error: error.message };
-  }
-}
-
-/**
- * Submits a quiz result and updates user ranking points.
- */
-export async function submitQuizResult(userId: string, userName: string, quizId: string, isCorrect: boolean) {
-  try {
-    const app = await initializeAdminApp();
-    const firestore = getFirestore(app);
-
-    const resultRef = firestore.collection('quizResults').doc(`${userId}_${quizId}`);
-    await resultRef.set({
-      userId,
-      userName,
-      quizId,
-      isCorrect,
-      submittedAt: FieldValue.serverTimestamp(),
-    });
-
-    // Reward points for excellence in regulatory awareness
-    if (isCorrect) {
+        // Reward logic
         const userRef = firestore.collection('users').doc(userId);
+        const points = type === 'Quiz' ? 15 : 10;
+
         await userRef.update({
-            rankingPoints: FieldValue.increment(15), // Higher reward for professional knowledge
+            rankingPoints: FieldValue.increment(points),
+            lastGameDate: gameId,
             updatedAt: FieldValue.serverTimestamp(),
         });
-    }
 
-    return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message };
-  }
+        return { success: true, points };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Retrieves the daily leaderboard for Frank's Game.
+ */
+export async function getFrankLeaderboard(gameId: string) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+
+        const snapshot = await firestore.collection('frankGameResults')
+            .where('gameId', '==', gameId)
+            .orderBy('type', 'asc') // Grouping
+            .orderBy('timeTakenMs', 'asc')
+            .limit(10)
+            .get();
+
+        const results = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        return { success: true, data: JSON.parse(JSON.stringify(results)) };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
 }
