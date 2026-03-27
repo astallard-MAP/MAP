@@ -1,0 +1,84 @@
+
+MY AUCTION PORTAL: ASSET INVENTORY AUDIT (2026-03-27)
+--------------------------------------------------
+
+1. EMAILS
+---------
+NAME: Portal Invitation
+TYPE: Email
+LOCATION: E-Mails / On-Boarding
+FILE: src/app/api/send-invite/route.ts
+PURPOSE: System-generated invitation for new users to join the portal.
+
+NAME: Invitation Email (Master)
+TYPE: Email
+LOCATION: E-Mails / Marketing
+FILE: documentTemplates collection (ID: portal-invite-v1)
+PURPOSE: Editable template for portal invitations and marketing broadcasts.
+
+2. DOCUMENTS
+------------
+NAME: Sales Agreement (Master)
+TYPE: Document
+LOCATION: Documents / Post Auction
+FILE: documentTemplates collection (ID: sales-agreement-v1)
+PURPOSE: The definitive master contract for completed auction lots.
+
+NAME: Complaints Handling Procedure
+TYPE: Document
+LOCATION: Documents / Compliance
+FILE: src/app/(public)/complaints-procedure/page.tsx
+PURPOSE: Public-facing legal document outlining TPO and RICS compliance timeframes.
+
+NAME: Privacy Policy
+TYPE: Document
+LOCATION: Documents / Compliance
+FILE: src/app/(public)/privacy-policy/page.tsx
+PURPOSE: Public-facing statement of data protection and UK-GDPR compliance.
+
+NAME: Legal Pack / Special Conditions
+TYPE: Document
+LOCATION: Documents / Pre-Auction
+FILE: legalDocuments collection (various)
+PURPOSE: Solicitor-assembled legal documents associated with specific property lots.
+
+3. SYSTEM NOTIFICATIONS
+-----------------------
+NAME: Lot Audit Required
+TYPE: Notification
+LOCATION: System Notifications / Admin
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: Dashboard alert for administrators when a new lot is submitted for review.
+
+NAME: Agency Access Request
+TYPE: Notification
+LOCATION: System Notifications / Admin
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: Alert for new organisations requesting access to the network.
+
+NAME: Feedback Engagement
+TYPE: Notification
+LOCATION: System Notifications / Admin
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: Alert for unread user suggestions and feature requests.
+
+NAME: Lot Assembly Reminder
+TYPE: Notification
+LOCATION: System Notifications / Staff
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: Reminder for Agency staff to complete draft property listings.
+
+NAME: Frank AI Support
+TYPE: Notification
+LOCATION: System Notifications / Compliance
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: User-facing prompt for AI-assisted legal and portal support.
+
+NAME: News Intelligence Report
+TYPE: Notification
+LOCATION: System Notifications / Agency
+FILE: src/app/(dashboard)/dashboard/page.tsx
+PURPOSE: Notification of newly published AI-aggregated property news summaries.
+
+--------------------------------------------------
+AUDIT COMPLETE - UK-EN PRODUCTION STANDARDS APPLIED

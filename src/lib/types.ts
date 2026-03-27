@@ -175,6 +175,36 @@ export interface SolicitorDocument {
     updatedAt?: Timestamp;
 }
 
+export interface Complaint {
+    id: string;
+    complaintRef: string; // Unique Identifier (e.g. COMP-12345)
+    authorName: string;
+    authorEmail: string;
+    telephone?: string;
+    subject: string;
+    content: string;
+    status: 'New' | 'Investigating' | 'Stage One Complete' | 'Stage Two Review' | 'Ombudsman' | 'Closed';
+    stage: 1 | 2 | 3; // Ombudsman is Stage 3
+    aiAnalysis?: string; // AI recommendations for corrective action
+    aiFlaws?: string[]; // Specifically identified service failures
+    aiRecommendedResponse?: string; // AI drafted response for admin approval
+    proceduralNextSteps?: string[]; // AI-generated checklist
+    nextProceduralDeadline?: string; // UK-EN target date for response
+    responses: ComplaintResponse[];
+    authorUid?: string; // If submitted by a logged-in member
+    createdAt: any;
+    updatedAt: any;
+    closedAt?: any;
+}
+
+export interface ComplaintResponse {
+    id: string;
+    authorName: string;
+    authorRole: string;
+    content: string;
+    isInternalOnly: boolean; // For private staff notes/AI suggestions
+    createdAt: any;
+}
 
 export interface AuctionHistoryItem {
   date: string;

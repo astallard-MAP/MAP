@@ -246,3 +246,88 @@ export async function getSolicitorRecommendations(location: string, currentParty
         return { success: false, error: error.message };
     }
 }
+import { analyseComplaintFlow } from "../../ai/flows/analyse-complaint-flow";
+
+/**
+ * Forensic analysis of incoming grievances.
+ * UK-EN: Scans for TPO/RICS procedural adherence and service flaws.
+ */
+export async function analyseAndStoreComplaint(complaintId: string) {
+    let firestore;
+    try {
+        const app = await initializeAdminApp();
+        firestore = getFirestore(app);
+        
+        const docRef = firestore.collection('complaints').doc(complaintId);
+        const snap = await docRef.get();
+        if (!snap.exists) throw new Error("Complaint not found.");
+
+        const complaint = snap.data() as any;
+        
+        // EXECUTE AI AUDIT
+        const aiResult = await analyseComplaintFlow({
+            complaintContent: complaint.content,
+            currentStage: complaint.stage || 1,
+            history: (complaint.responses || []).map((r: any) => r.content)
+        });
+
+        await docRef.update({
+            aiAnalysis: aiResult.summary,
+            aiFlaws: aiResult.flawsIdentified,
+            proceduralNextSteps: aiResult.proceduralChecklist,
+            aiRecommendedResponse: aiResult.recommendedResponse,
+            nextProceduralDeadline: aiResult.nextProceduralDeadline,
+            updatedAt: FieldValue.serverTimestamp()
+        });
+
+        return { success: true, analysis: aiResult };
+    } catch (error: any) {
+        console.error("Forensic AI Analysis Failure:", error.message);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function addComplaintResponse(complaintId: string, responseContent: string, authorName: string, authorRole: string, isInternal: boolean = false) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        
+        const docRef = firestore.collection('complaints').doc(complaintId);
+        
+        const responseObj = {
+            id: Math.random().toString(36).substring(7),
+            content: responseContent,
+            authorName,
+            authorRole,
+            isInternalOnly: isInternal,
+            createdAt: FieldValue.serverTimestamp()
+        };
+
+        await docRef.update({
+            responses: FieldValue.arrayUnion(responseObj),
+            updatedAt: FieldValue.serverTimestamp()
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function updateComplaintStatus(complaintId: string, status: any, stage: number) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        
+        await firestore.collection('complaints').doc(complaintId).update({
+            status,
+            stage,
+            updatedAt: FieldValue.serverTimestamp(),
+            closedAt: status === 'Closed' ? FieldValue.serverTimestamp() : null
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
