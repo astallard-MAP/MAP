@@ -1,9 +1,10 @@
 'use server';
 
-import { summariseNewsFlow } from "../../ai/flows/summarise-news-flow";
-import rssFeeds from "../../lib/rss-feeds.json";
+import { summariseNewsFlow } from "@/ai/flows/summarise-news-flow";
+import { analyseAmlCaseFlow } from "@/ai/flows/analyse-aml-case-flow";
+import rssFeeds from "@/lib/rss-feeds.json";
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { initializeAdminApp } from "../../firebase/server-init";
+import { initializeAdminApp } from "@/firebase/server-init";
 import { getAuth } from "firebase-admin/auth";
 // @ts-ignore
 import mailchimp from '@mailchimp/mailchimp_marketing';
@@ -324,6 +325,67 @@ export async function updateComplaintStatus(complaintId: string, status: any, st
             stage,
             updatedAt: FieldValue.serverTimestamp(),
             closedAt: status === 'Closed' ? FieldValue.serverTimestamp() : null
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+export async function analyseAmlCaseAction(caseId: string, amlData: any) {
+    try {
+        const result = await analyseAmlCaseFlow(amlData);
+        
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        const docRef = firestore.collection('aml_cases').doc(caseId);
+
+        if (result) {
+            await docRef.update({
+                aiRiskAnalysis: result.riskSummary,
+                proceduralChecklist: result.mandatoryChecklist,
+                aiRedFlags: result.redFlags,
+                aiGuidance: result.guidanceForMlro,
+                sarRecommendation: result.sarRecommendation,
+                updatedAt: FieldValue.serverTimestamp()
+            });
+            return { success: true, result };
+        }
+        return { success: false, error: "AI Audit Result Empty" };
+    } catch (error: any) {
+        console.error("AML Analysis Action Failure:", error.message);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function updateAmlCaseAction(caseId: string, payload: any) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        
+        await firestore.collection('aml_cases').doc(caseId).update({
+            ...payload,
+            updatedAt: FieldValue.serverTimestamp()
+        });
+
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function addAmlAuditAction(caseId: string, actionObj: any) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        const docRef = firestore.collection('aml_cases').doc(caseId);
+
+        await docRef.update({
+            actions: FieldValue.arrayUnion({
+                ...actionObj,
+                createdAt: FieldValue.serverTimestamp()
+            }),
+            updatedAt: FieldValue.serverTimestamp()
         });
 
         return { success: true };

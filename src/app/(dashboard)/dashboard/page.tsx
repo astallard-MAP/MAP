@@ -55,6 +55,7 @@ import { OFFICIAL_AUCTION_DATES } from "../../../lib/constants";
 import { isAfter, format } from "date-fns";
 import { AnalogueClock } from "../../../components/AnalogueClock";
 import { DailyGameWidget } from "../../../components/DailyGameWidget";
+import { DailyQuizWidget } from "../../../components/DailyQuizWidget";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",
@@ -448,11 +449,12 @@ export default function DashboardPage() {
             </Badge>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-            <div className="md:col-span-2 grid gap-6">
-                <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2 grid gap-6">
+                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     <TasksCard tasks={tasks} />
                     <DailyGameWidget />
+                    <DailyQuizWidget />
                 </div>
                 <Card>
                     <CardHeader className="pb-3 border-b bg-muted/5">

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useUser } from "../firebase";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { useUser } from "@/firebase";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Trophy, Flame, Loader2, Gavel, Sparkles, Info, X } from "lucide-react";
-import { getDailyGame, submitGameResult, getGameLeaderboard } from "../app/actions/game-actions";
-import { useToast } from "../hooks/use-toast";
-import { Badge } from "./ui/badge";
-import { cn } from "../lib/utils";
+import { getDailyGame, submitGameResult, getGameLeaderboard } from "@/app/actions/game-actions";
+import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 /**
  * @fileOverview Production Daily Game Widget for MAP261125.

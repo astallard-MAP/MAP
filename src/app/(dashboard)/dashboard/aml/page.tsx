@@ -1,18 +1,17 @@
-
 "use client";
 
-import { useFirestore, useCollection, useMemoFirebase, useUser } from "../../../../firebase";
+import { useFirestore, useCollection, useMemoFirebase, useUser } from "@/firebase";
 import { query, collection, orderBy } from "firebase/firestore";
 import { format } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../../components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../../components/ui/table";
-import { Button } from "../../../../components/ui/button";
-import { Badge } from "../../../../components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Loader2, ShieldAlert, Fingerprint, ArrowLeft, History, FileWarning, Search, Plus } from "lucide-react";
 import Link from "next/link";
-import { AmlCase } from "../../../../lib/types";
+import { AmlCase } from "@/lib/types";
 
 /**
  * @fileOverview Production AML (Anti-Money Laundering) Registry.

@@ -1,8 +1,8 @@
 'use server';
 
-import { initializeAdminApp } from "../../firebase/server-init";
+import { initializeAdminApp } from "@/firebase/server-init";
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { generateDailyGame } from "../../ai/flows/generate-game-flow";
+import { generateDailyGame } from "@/ai/flows/generate-game-flow";
 
 /**
  * Retrieves the daily puzzle for the portal.
@@ -128,6 +128,78 @@ export async function getGameLeaderboard(gameId: string) {
     return { success: true, data: JSON.parse(JSON.stringify(results)) };
   } catch (error: any) {
     console.error("Leaderboard Retrieval Failure:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+import { generateQuizFlow } from "@/ai/flows/generate-quiz-flow";
+
+/**
+ * Retrieves the daily quiz for the portal.
+ * UK-EN: Focuses on professional regulatory knowledge.
+ */
+export async function getDailyQuiz() {
+  try {
+    const app = await initializeAdminApp();
+    const firestore = getFirestore(app);
+    const today = new Date().toISOString().split('T')[0];
+
+    const quizDoc = await firestore.collection('dailyQuizzes').doc(today).get();
+    if (quizDoc.exists) {
+        return { 
+          success: true, 
+          data: JSON.parse(JSON.stringify({ ...quizDoc.data(), id: today })) 
+        };
+    }
+
+    // AI Generation
+    const newQuiz = await generateQuizFlow({});
+
+    const payload = {
+      ...newQuiz,
+      date: today,
+      createdAt: FieldValue.serverTimestamp(),
+    };
+
+    await firestore.collection('dailyQuizzes').doc(today).set(payload);
+
+    return { 
+      success: true, 
+      data: JSON.parse(JSON.stringify({ ...newQuiz, date: today, id: today })) 
+    };
+  } catch (error: any) {
+    console.error("Quiz Retrieval Failure:", error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Submits a quiz result and updates user ranking points.
+ */
+export async function submitQuizResult(userId: string, userName: string, quizId: string, isCorrect: boolean) {
+  try {
+    const app = await initializeAdminApp();
+    const firestore = getFirestore(app);
+
+    const resultRef = firestore.collection('quizResults').doc(`${userId}_${quizId}`);
+    await resultRef.set({
+      userId,
+      userName,
+      quizId,
+      isCorrect,
+      submittedAt: FieldValue.serverTimestamp(),
+    });
+
+    // Reward points for excellence in regulatory awareness
+    if (isCorrect) {
+        const userRef = firestore.collection('users').doc(userId);
+        await userRef.update({
+            rankingPoints: FieldValue.increment(15), // Higher reward for professional knowledge
+            updatedAt: FieldValue.serverTimestamp(),
+        });
+    }
+
+    return { success: true };
+  } catch (error: any) {
     return { success: false, error: error.message };
   }
 }

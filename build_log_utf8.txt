@@ -1,0 +1,163 @@
+﻿
+> my-auction-portal@1.0.0 build
+> next build
+
+  Γû▓ Next.js 14.2.35
+  - Environments: .env
+
+   Creating an optimized production build ...
+node.exe : Failed to compile.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo          :  
+   NotSpecified: (Failed to c  
+  ompile.:String) [], Remote   
+ Exception
+    + FullyQualifiedErrorId :  
+   NativeCommandError
+ 
+
+./node_modules/@genkit-ai/verte
+xai/node_modules/gcp-metadata/b
+uild/src/gcp-residency.js
+Module not found: Can't 
+resolve 'fs'
+
+https://nextjs.org/docs/message
+s/module-not-found
+
+Import trace for requested 
+module:
+./node_modules/@genkit-ai/verte
+xai/node_modules/gcp-metadata/b
+uild/src/index.js
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/common/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/index.mjs
+./src/ai/genkit.ts
+./src/ai/flows/analyse-aml-case
+-flow.ts
+./src/app/(dashboard)/dashboard
+/aml/[id]/page.tsx
+
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/filesubjec
+ttokensupplier.js
+Module not found: Can't 
+resolve 'fs'
+
+https://nextjs.org/docs/message
+s/module-not-found
+
+Import trace for requested 
+module:
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/identitypo
+olclient.js
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/common/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/index.mjs
+./src/ai/genkit.ts
+./src/ai/flows/analyse-aml-case
+-flow.ts
+./src/app/(dashboard)/dashboard
+/aml/[id]/page.tsx
+
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/googleauth
+.js
+Module not found: Can't 
+resolve 'child_process'
+
+https://nextjs.org/docs/message
+s/module-not-found
+
+Import trace for requested 
+module:
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/common/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/index.mjs
+./src/ai/genkit.ts
+./src/ai/flows/analyse-aml-case
+-flow.ts
+./src/app/(dashboard)/dashboard
+/aml/[id]/page.tsx
+
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/googleauth
+.js
+Module not found: Can't 
+resolve 'fs'
+
+https://nextjs.org/docs/message
+s/module-not-found
+
+Import trace for requested 
+module:
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/common/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/index.mjs
+./src/ai/genkit.ts
+./src/ai/flows/analyse-aml-case
+-flow.ts
+./src/app/(dashboard)/dashboard
+/aml/[id]/page.tsx
+
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/pluggable-
+auth-handler.js
+Module not found: Can't 
+resolve 'child_process'
+
+https://nextjs.org/docs/message
+s/module-not-found
+
+Import trace for requested 
+module:
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/auth/pluggable-
+auth-client.js
+./node_modules/@genkit-ai/verte
+xai/node_modules/google-auth-li
+brary/build/src/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/common/index.js
+./node_modules/@genkit-ai/verte
+xai/lib/index.mjs
+./src/ai/genkit.ts
+./src/ai/flows/analyse-aml-case
+-flow.ts
+./src/app/(dashboard)/dashboard
+/aml/[id]/page.tsx
+
+
+> Build failed because of 
+webpack errors

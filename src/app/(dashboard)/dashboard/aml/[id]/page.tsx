@@ -3,18 +3,20 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useFirestore, useDoc, useUser, useMemoFirebase } from "../../../../../firebase";
+import { useFirestore, useDoc, useUser, useMemoFirebase } from "@/firebase";
 import { doc, collection, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { AmlCase, AmlAction } from "../../../../../lib/types";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../../../../../components/ui/card";
-import { Button } from "../../../../../components/ui/button";
-import { Badge } from "../../../../../components/ui/badge";
-import { Textarea } from "../../../../../components/ui/textarea";
-import { Label } from "../../../../../components/ui/label";
-import { useToast } from "../../../../../hooks/use-toast";
+import { AmlCase, AmlAction } from "@/lib/types";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { 
-    analyseAmlCaseFlow 
-} from "../../../../../ai/flows/analyse-aml-case-flow";
+    analyseAmlCaseAction, 
+    updateAmlCaseAction, 
+    addAmlAuditAction 
+} from "@/app/actions/server-actions";
 import { 
     Loader2, ShieldAlert, Fingerprint, ArrowLeft, History, 
     CheckCircle2, AlertTriangle, Send, BrainCircuit, Search,
@@ -50,24 +52,18 @@ export default function AmlDetailClientPage() {
     if (!id || !amlCase) return;
     setIsAnalysing(true);
     try {
-        const result = await analyseAmlCaseFlow({
+        const amlData = {
             type: amlCase.type,
             subjectInfo: amlCase.subjectName,
             riskRating: amlCase.riskRating,
             isPep: amlCase.isPep,
             evidence: amlCase.evidenceUrls || []
-        });
-
-        if (result) {
-            await updateDoc(docRef!, {
-                aiRiskAnalysis: result.riskSummary,
-                proceduralChecklist: result.mandatoryChecklist,
-                aiRedFlags: result.redFlags,
-                aiGuidance: result.guidanceForMlro,
-                sarRecommendation: result.sarRecommendation,
-                updatedAt: serverTimestamp()
-            });
+        };
+        const res = await analyseAmlCaseAction(id as string, amlData);
+        if (res.success) {
             toast({ title: "Forensic Audit Complete", description: "Frank AI has recorded compliance recommendations." });
+        } else {
+            throw new Error(res.error);
         }
     } catch (e: any) {
         toast({ variant: 'destructive', title: "Analysis Failed", description: e.message });
@@ -85,17 +81,15 @@ export default function AmlDetailClientPage() {
             description: actionDesc,
             authorName: userProfile.displayName || 'MLRO',
             isInternalOnly: isInternal,
-            createdAt: serverTimestamp()
         };
 
-        const updatedActions = [...(amlCase?.actions || []), actionObj];
-        await updateDoc(docRef!, {
-            actions: updatedActions,
-            updatedAt: serverTimestamp()
-        });
-
-        setActionDesc("");
-        toast({ title: "Audit Trail Updated", description: "Compliance record has been saved." });
+        const res = await addAmlAuditAction(id as string, actionObj);
+        if (res.success) {
+            setActionDesc("");
+            toast({ title: "Audit Trail Updated", description: "Compliance record has been saved." });
+        } else {
+            throw new Error(res.error);
+        }
     } catch (e: any) {
         toast({ variant: 'destructive', title: "Action Failed", description: e.message });
     } finally {
@@ -106,12 +100,16 @@ export default function AmlDetailClientPage() {
   const handleUpdateStatus = async (status: string) => {
     if (!id) return;
     try {
-        await updateDoc(docRef!, {
+        const payload = {
             status,
-            updatedAt: serverTimestamp(),
             closedAt: status === 'Approved' || status === 'Rejected' ? serverTimestamp() : null
-        });
-        toast({ title: "Case Status Updated", description: `Case is now marked as ${status}.` });
+        };
+        const res = await updateAmlCaseAction(id as string, payload);
+        if (res.success) {
+            toast({ title: "Case Status Updated", description: `Case is now marked as ${status}.` });
+        } else {
+            throw new Error(res.error);
+        }
     } catch (e: any) {
         toast({ variant: 'destructive', title: "Update Failed", description: e.message });
     }
