@@ -238,6 +238,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 {isAdmin && <div className="px-2 mb-2"><UserRoleSwitcher originalRole={personaForSwitcher as UserRole} /></div>}
                 <SidebarMenu>
                   <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === "/complaints-procedure"} tooltip="Complaints Procedure">
+                      <Link href="/complaints-procedure">
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Complaints Procedure</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={pathname === "/dashboard/support"} tooltip="Support">
                       <Link href="/dashboard/support">
                         <LifeBuoy className="h-4 w-4" />
