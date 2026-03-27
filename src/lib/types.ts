@@ -163,6 +163,9 @@ export interface SolicitorDocument {
     title: string;
     content: string;
     status: 'Draft' | 'Final';
+    type?: 'Email' | 'Document' | 'Notification'; // UK-EN Production Classification
+    category?: string; // e.g. On-Boarding, Marketing, Pre-Auction
+    description?: string; // Purpose and intention of the document
     propertyId?: string;
     propertyName?: string;
     solicitorFirmId?: string;
@@ -171,6 +174,7 @@ export interface SolicitorDocument {
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
+
 
 export interface AuctionHistoryItem {
   date: string;

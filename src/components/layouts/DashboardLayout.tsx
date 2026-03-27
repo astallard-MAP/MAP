@@ -107,7 +107,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return [
       { name: "Lot Audit", href: "/dashboard/review-properties?status=Submitted", icon: Gavel },
       { name: "Access Requests", href: "/dashboard/access-requests", icon: UserPlus2 },
-      { name: "Document Assembly", href: "/dashboard/document-management", icon: FileText },
+      { name: "Document Templates", href: "/dashboard/document-management", icon: FileText },
     ];
   }, [isAdmin]);
 

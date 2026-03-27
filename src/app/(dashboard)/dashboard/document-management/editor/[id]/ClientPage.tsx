@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useUser, useFirestore, useDoc, useMemoFirebase } from "../../../../../../firebase";
 import { type SolicitorDocument } from "../../../../../../lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../../../../../../components/ui/card";
 import { Button } from "../../../../../../components/ui/button";
 import { Input } from "../../../../../../components/ui/input";
 import { Label } from "../../../../../../components/ui/label";
+import { Textarea } from "../../../../../../components/ui/textarea";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../../../../../../components/ui/select";
 import { DocumentEditor } from "../../../../../../components/editor/DocumentEditor";
 import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useToast } from "../../../../../../hooks/use-toast";
@@ -16,15 +18,22 @@ import { Badge } from "../../../../../../components/ui/badge";
 
 export default function DocumentTemplateEditorPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { userProfile } = useUser();
   const firestore = useFirestore();
   const { toast } = useToast();
 
   const isNew = id === 'new';
+  const paramType = searchParams.get('type') as any;
+  const paramCategory = searchParams.get('category');
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState<'Draft' | 'Final'>('Draft');
+  const [type, setType] = useState<any>(paramType || "Email");
+  const [category, setCategory] = useState(paramCategory || "");
+  const [description, setDescription] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const docRef = useMemoFirebase(() => {
@@ -39,6 +48,9 @@ export default function DocumentTemplateEditorPage() {
       setTitle(existingDoc.title || "");
       setContent(existingDoc.content || "");
       setStatus(existingDoc.status || "Draft");
+      setType(existingDoc.type || "Email");
+      setCategory(existingDoc.category || "");
+      setDescription(existingDoc.description || "");
     }
   }, [existingDoc]);
 
@@ -56,6 +68,9 @@ export default function DocumentTemplateEditorPage() {
     const payload: any = {
       title,
       content,
+      type,
+      category,
+      description,
       status: isFinal ? 'Final' : status,
       updatedAt: serverTimestamp(),
     };
@@ -92,7 +107,7 @@ export default function DocumentTemplateEditorPage() {
           <h1 className="text-2xl font-bold tracking-tight font-headline text-slate-900">
             {isNew ? "Assemble New Template" : `Editing: ${title}`}
           </h1>
-          <p className="text-muted-foreground text-sm">UK-EN: Rich-Text Assembly Desk.</p>
+          <p className="text-muted-foreground text-sm font-medium uppercase tracking-widest text-primary">UK-EN: Rich-Text Assembly Desk.</p>
         </div>
       </header>
 
@@ -129,6 +144,56 @@ export default function DocumentTemplateEditorPage() {
                   className="h-9 text-sm"
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-muted-foreground">Document Type</Label>
+                <Select value={type} onValueChange={setType}>
+                  <SelectTrigger className="h-9 text-xs">
+                    <SelectValue placeholder="Select type..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Email">Email</SelectItem>
+                    <SelectItem value="Document">Document</SelectItem>
+                    <SelectItem value="Notification">Notification</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-muted-foreground">File Location / Category</Label>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="h-9 text-xs">
+                    <SelectValue placeholder="Select location..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel className="text-[10px] uppercase text-muted-foreground">Emails</SelectLabel>
+                      {['On-Boarding', 'Marketing', 'Financial', 'Legal', 'Compliance'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel className="text-[10px] uppercase text-muted-foreground">Documents</SelectLabel>
+                      {['Pre-Auction', 'Auction Day', 'Post Auction', 'Compliance'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel className="text-[10px] uppercase text-muted-foreground">Notifications</SelectLabel>
+                      {['Admin', 'Staff', 'Agency', 'Compliance'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-xs font-bold text-muted-foreground">Description & Purpose</Label>
+                <Textarea 
+                  id="description" 
+                  value={description} 
+                  onChange={(e) => setDescription(e.target.value)} 
+                  placeholder="Intention of this document..."
+                  className="text-xs resize-none"
+                  rows={4}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-muted-foreground">Status</Label>
                 <Badge variant={status === 'Draft' ? 'secondary' : 'default'} className="block w-fit px-2 h-6">

@@ -14,6 +14,17 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { Badge } from "../../../../components/ui/badge";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../../components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
+
 export default function DocumentManagementPage() {
   const router = useRouter();
   const { userProfile, isLoading: userLoading } = useUser();
@@ -39,8 +50,12 @@ export default function DocumentManagementPage() {
     }
   };
 
+  const getCreationLink = (type: string, category: string) => {
+     return `/dashboard/document-management/editor/new?type=${encodeURIComponent(type)}&category=${encodeURIComponent(category)}`;
+  };
+
   if (userLoading || templatesLoading) {
-    return <div className="p-8 text-center flex items-center justify-center h-[60vh]"><Loader2 className="animate-spin mr-2"/>Initialising Template Archives...</div>;
+    return <div className="p-8 text-center flex items-center justify-center h-[60vh]"><Loader2 className="animate-spin mr-2"/>Initialising Document Templates...</div>;
   }
 
   if (!isAdmin) {
@@ -58,16 +73,47 @@ export default function DocumentManagementPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight font-headline flex items-center text-slate-900">
               <FileText className="mr-3 h-8 w-8 text-primary" />
-              Document Management
+              Document Templates
             </h1>
-            <p className="text-muted-foreground font-medium">Audit Desk: Manage sales agreements and system email templates.</p>
+            <p className="text-muted-foreground font-medium">Audit Desk: Manage master communications and production agreements.</p>
           </div>
         </div>
-        <Button asChild>
-          <Link href="/dashboard/document-management/editor/new">
-            <Plus className="mr-2 h-4 w-4" /> Create New Template
-          </Link>
-        </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="font-bold shadow-md">
+              <Plus className="mr-2 h-4 w-4" /> Create New Template <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">E-Mails</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              {['On-Boarding', 'Marketing', 'Financial', 'Legal', 'Compliance'].map(cat => (
+                <DropdownMenuItem key={cat} asChild>
+                  <Link href={getCreationLink('Email', cat)}>{cat}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Documents</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              {['Pre-Auction', 'Auction Day', 'Post Auction', 'Compliance'].map(cat => (
+                <DropdownMenuItem key={cat} asChild>
+                  <Link href={getCreationLink('Document', cat)}>{cat}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Notifications</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              {['Admin', 'Staff', 'Agency', 'Compliance'].map(cat => (
+                <DropdownMenuItem key={cat} asChild>
+                  <Link href={getCreationLink('Notification', cat)}>{cat}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -106,7 +152,8 @@ export default function DocumentManagementPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Template Name</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead>Classification</TableHead>
+                <TableHead>Location</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Last Updated</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -118,10 +165,17 @@ export default function DocumentManagementPage() {
                   <TableRow key={template.id}>
                     <TableCell className="font-bold text-slate-900">{template.title}</TableCell>
                     <TableCell>
-                        <Badge variant="outline">{template.status === 'Final' ? 'Production' : 'Draft'}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-bold uppercase">{template.type || 'Legacy'}</Badge>
                     </TableCell>
-                    <TableCell>{template.status}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground tabular-nums">
+                    <TableCell className="text-xs font-medium text-slate-600 italic">
+                        {template.category || 'Unclassified'}
+                    </TableCell>
+                    <TableCell>
+                        <Badge variant={template.status === 'Final' ? 'default' : 'secondary'} className="text-[10px] uppercase">
+                            {template.status}
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="text-[10px] text-muted-foreground tabular-nums">
                       {formatSafeDate(template.updatedAt)}
                     </TableCell>
                     <TableCell className="text-right">
@@ -135,8 +189,8 @@ export default function DocumentManagementPage() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground italic">
-                    No custom templates assembled. Use the buttons above to start editing master templates.
+                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground italic">
+                    No custom templates assembled. Use the dropdown above to start a new production template.
                   </TableCell>
                 </TableRow>
               )}
@@ -147,3 +201,4 @@ export default function DocumentManagementPage() {
     </div>
   );
 }
+
