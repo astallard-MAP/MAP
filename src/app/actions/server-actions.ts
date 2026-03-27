@@ -22,15 +22,18 @@ export async function summariseAndSaveNews() {
         let allArticlesText = '';
         const sourcesUsed: string[] = [];
 
-        // Clinical Loop with Fetch Timeouts
+        // Clinical Loop with Refined Fetch and Parsing
         for (const feed of rssFeeds.feeds) {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 3000); // Tighter timeout for Cloud Scheduler
 
                 const response = await fetch(feed.url, { 
                     next: { revalidate: 3600 },
-                    signal: controller.signal 
+                    signal: controller.signal,
+                    headers: {
+                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                    }
                 });
                 
                 clearTimeout(timeoutId);
@@ -38,9 +41,12 @@ export async function summariseAndSaveNews() {
                 
                 const text = await response.text();
                 
-                const items = text.split(/<item|<entry/).slice(1, 4);
+                // UK-EN Forensic Parsing: Support standard and namespaced items/entries accurately
+                const items = text.split(/<(?:[a-z0-9]+:)?(?:item|entry)/i).slice(1, 6); // Grab up to 5 items for better context
+                let itemsFoundForFeed = 0;
+
                 for (const item of items) {
-                    const titleMatch = item.match(/<title[^>]*>(.*?)<\/title>/i);
+                    const titleMatch = item.match(/<(?:[a-z0-9]+:)?title[^>]*>(.*?)<\/(?:[a-z0-9]+:)?title>/i);
                     if (titleMatch && titleMatch[1]) {
                          const title = titleMatch[1]
                             .replace(/<!\[CDATA\[|\]\]>/g, '')
@@ -48,14 +54,19 @@ export async function summariseAndSaveNews() {
                             .trim();
                          if (title) {
                             allArticlesText += `Source: ${feed.name} - Intel: ${title}\n`;
+                            itemsFoundForFeed++;
                          }
                     }
                 }
-                sourcesUsed.push(feed.name);
+                
+                if (itemsFoundForFeed > 0) {
+                  sourcesUsed.push(feed.name);
+                }
             } catch (e) {
-                console.warn(`UK-WARN: News Source Offline: ${feed.name}`);
+                console.warn(`UK-WARN: News Source Offline or Interrupted: ${feed.name}`);
             }
         }
+
 
         const now = new Date();
         const ukTimeStr = new Intl.DateTimeFormat('en-GB', {
@@ -75,37 +86,44 @@ export async function summariseAndSaveNews() {
 
         const summaryResult = await summariseNewsFlow({ 
             articlesContent: allArticlesText || "Steady activity in the UK property auction market.", 
-            sources: sourcesUsed.join(', ') || "Market Internal",
+            sources: sourcesUsed.join(', ') || "Market Internal Intelligence",
             currentUkTime: ukTimeStr,
             currentUkDate: ukDateStr
         });
         
-        await firestore.collection('newsArticles').add({
+        const docRef = await firestore.collection('newsArticles').add({
             ...summaryResult,
             publishedAt: FieldValue.serverTimestamp(),
             author: "Frank Tadsworth-Bids",
+            intelCount: allArticlesText.split('Source:').length - 1
         });
 
         await firestore.collection('system').doc('newsCron').set({
             lastRun: FieldValue.serverTimestamp(),
             status: 'Success',
             sourcesCount: sourcesUsed.length,
+            articlesAggregated: allArticlesText.split('Source:').length - 1,
+            lastArticleId: docRef.id,
             error: null
         }, { merge: true });
         
         return { success: true, data: JSON.parse(JSON.stringify(summaryResult)) };
     } catch (error: any) {
-        console.error("UK-DIAGNOSTIC-FAILURE:", error.message);
+        console.error("UK-DIAGNOSTIC-FAILURE (Forensic Analysis):", error.message);
+        console.error("Stack Trace:", error.stack);
+        
         if (firestore) {
             await firestore.collection('system').doc('newsCron').set({
                 lastRun: FieldValue.serverTimestamp(),
                 status: 'Failed',
-                error: error.message
+                error: error.message,
+                stack: error.stack?.substring(0, 500) // Buffer summary for Firestore limits
             }, { merge: true });
         }
         return { success: false, error: error.message };
     }
 }
+
 
 export async function wipePortalData() {
     try {

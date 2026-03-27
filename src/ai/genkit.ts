@@ -9,8 +9,11 @@ import { vertexAI } from '@genkit-ai/vertexai';
 export const ai = genkit({
   plugins: [
     vertexAI({
+      projectId: 'map261125',
       location: 'us-central1',
     }),
   ],
   model: 'vertexai/gemini-2.5-flash',
 });
+
+

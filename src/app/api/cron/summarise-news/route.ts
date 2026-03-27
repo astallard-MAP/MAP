@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { summariseAndSaveNews } from "../../../../app/actions/server-actions";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * @fileOverview Definitive Cron Endpoint for News Summarisation.
+
  * Clinicaly stabilised for App Hosting Cloud Scheduler.
  * UK-EN Protocol Enforcement.
  */

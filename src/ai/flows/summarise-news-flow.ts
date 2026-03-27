@@ -59,13 +59,19 @@ export const summariseNewsFlow = ai.defineFlow(
   },
   async (input) => {
     const summaryResponse = await newsSummariserPrompt(input);
-    const summaryText = summaryResponse.text;
+    const summaryText = summaryResponse.text.trim();
+    
+    // Forensic parsing to ensure quality even if AI deviates from format
+    const lines = summaryText.split('\n');
+    const title = (lines[0] || "Frank's Digest: UK Auction News Intelligence").replace(/^#+\s*/, '').trim();
+    const summary = lines.slice(1).join('\n').trim();
     
     return {
-      title: summaryText.split('\n')[0] || "Frank's Digest: UK Auction News",
-      summary: summaryText.substring(summaryText.indexOf('\n') + 1).trim(),
+      title: title || "Frank's Digest: UK Auction News",
+      summary: summary || summaryText, // Fallback to full text if parsing logic failed to separate
       source: input.sources,
       url: "",
     };
   }
 );
+
