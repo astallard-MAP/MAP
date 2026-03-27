@@ -26,8 +26,8 @@ interface PermissionContextType {
 const PermissionContext = createContext<PermissionContextType | undefined>(undefined);
 
 const canManageRoleMap: Record<UserRole, UserRole[]> = {
-    'Global Admin': ['Global Admin', 'TAD Admin', 'Regional Manager', 'Area Manager', 'Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Sales Negotiator', 'Buyer', 'Seller', 'Solicitor', 'Standard User', 'Individual', 'Group of Individuals', 'Company', 'Corporate Body'],
-    'TAD Admin': ['Regional Manager', 'Area Manager', 'Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Sales Negotiator', 'Buyer', 'Seller', 'Solicitor', 'Standard User', 'Individual', 'Group of Individuals', 'Company', 'Corporate Body'],
+    'Global Admin': ['Global Admin', 'TAD Admin', 'Regional Manager', 'Area Manager', 'Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Auction Administrator', 'Sales Negotiator', 'Buyer', 'Seller', 'Solicitor', 'Standard User', 'Individual', 'Group of Individuals', 'Company', 'Corporate Body'],
+    'TAD Admin': ['Regional Manager', 'Area Manager', 'Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Auction Administrator', 'Sales Negotiator', 'Buyer', 'Seller', 'Solicitor', 'Standard User', 'Individual', 'Group of Individuals', 'Company', 'Corporate Body'],
     'Regional Manager': ['Area Manager', 'Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Sales Negotiator', 'Buyer', 'Seller'],
     'Area Manager': ['Sales Manager', 'Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Sales Negotiator'],
     'Sales Manager': ['Agency Owner', 'Regional Manager (Agency)', 'Branch Manager', 'Office Administrator', 'Sales Negotiator'],
@@ -35,6 +35,7 @@ const canManageRoleMap: Record<UserRole, UserRole[]> = {
     'Regional Manager (Agency)': ['Branch Manager', 'Office Administrator', 'Sales Negotiator', 'Buyer', 'Seller'],
     'Branch Manager': ['Office Administrator', 'Sales Negotiator'],
     'Office Administrator': ['Sales Negotiator'],
+    'Auction Administrator': ['Sales Negotiator', 'Buyer', 'Seller'],
     'Sales Negotiator': [],
     'Buyer': [],
     'Seller': [],

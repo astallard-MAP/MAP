@@ -11,6 +11,7 @@ export type UserRole =
   | 'Regional Manager (Agency)'
   | 'Branch Manager'
   | 'Office Administrator'
+  | 'Auction Administrator'
   | 'Sales Negotiator'
   | 'Buyer'
   | 'Seller'

@@ -9,6 +9,7 @@ import { getAuth } from "firebase-admin/auth";
 // @ts-ignore
 import mailchimp from '@mailchimp/mailchimp_marketing';
 import { type SolicitorRanking } from "../../lib/types";
+import { priorityAnalysisFlow } from "../../ai/flows/priority-analysis-flow";
 
 /**
  * Automates news aggregation and AI summarisation.
@@ -20,14 +21,13 @@ export async function summariseAndSaveNews() {
         const app = await initializeAdminApp();
         firestore = getFirestore(app);
         
-        let allArticlesText = '';
-        const sourcesUsed: string[] = [];
-
-        // Clinical Loop with Refined Fetch and Parsing
-        for (const feed of rssFeeds.feeds) {
+        console.log("UK-EN: Starting parallel news aggregation for", rssFeeds.feeds.length, "sources.");
+        
+        // Parallel Clinical Fetch with Individual Timeouts
+        const fetchPromises = rssFeeds.feeds.map(async (feed) => {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000); // Tighter timeout for Cloud Scheduler
+                const timeoutId = setTimeout(() => controller.abort(), 4000); // 4s timeout for each source
 
                 const response = await fetch(feed.url, { 
                     next: { revalidate: 3600 },
@@ -38,13 +38,11 @@ export async function summariseAndSaveNews() {
                 });
                 
                 clearTimeout(timeoutId);
-                if (!response.ok) continue;
+                if (!response.ok) return null;
                 
                 const text = await response.text();
-                
-                // UK-EN Forensic Parsing: Support standard and namespaced items/entries accurately
-                const items = text.split(/<(?:[a-z0-9]+:)?(?:item|entry)/i).slice(1, 6); // Grab up to 5 items for better context
-                let itemsFoundForFeed = 0;
+                const items = text.split(/<(?:[a-z0-9]+:)?(?:item|entry)/i).slice(1, 6);
+                let intelItems = [];
 
                 for (const item of items) {
                     const titleMatch = item.match(/<(?:[a-z0-9]+:)?title[^>]*>(.*?)<\/(?:[a-z0-9]+:)?title>/i);
@@ -53,21 +51,29 @@ export async function summariseAndSaveNews() {
                             .replace(/<!\[CDATA\[|\]\]>/g, '')
                             .replace(/<[^>]*>?/gm, '')
                             .trim();
-                         if (title) {
-                            allArticlesText += `Source: ${feed.name} - Intel: ${title}\n`;
-                            itemsFoundForFeed++;
-                         }
+                         if (title) intelItems.push(`Source: ${feed.name} - Intel: ${title}`);
                     }
                 }
                 
-                if (itemsFoundForFeed > 0) {
-                  sourcesUsed.push(feed.name);
-                }
+                return intelItems.length > 0 ? { name: feed.name, items: intelItems } : null;
             } catch (e) {
-                console.warn(`UK-WARN: News Source Offline or Interrupted: ${feed.name}`);
+                console.warn(`UK-WARN: News Source Offline: ${feed.name}`);
+                return null;
             }
-        }
+        });
 
+        const results = await Promise.allSettled(fetchPromises);
+        let allArticlesText = '';
+        const sourcesUsed: string[] = [];
+
+        results.forEach(res => {
+            if (res.status === 'fulfilled' && res.value) {
+                allArticlesText += res.value.items.join('\n') + '\n';
+                sourcesUsed.push(res.value.name);
+            }
+        });
+
+        console.log("UK-EN: Aggregated intel from", sourcesUsed.length, "sources. Sending to AI...");
 
         const now = new Date();
         const ukTimeStr = new Intl.DateTimeFormat('en-GB', {
@@ -92,22 +98,24 @@ export async function summariseAndSaveNews() {
             currentUkDate: ukDateStr
         });
         
+        console.log("UK-EN: AI summary generated. Publishing to Firestore...");
+
         const docRef = await firestore.collection('newsArticles').add({
             ...summaryResult,
             publishedAt: FieldValue.serverTimestamp(),
             author: "Frank Tadsworth-Bids",
-            intelCount: allArticlesText.split('Source:').length - 1
+            intelCount: sourcesUsed.length
         });
 
         await firestore.collection('system').doc('newsCron').set({
             lastRun: FieldValue.serverTimestamp(),
             status: 'Success',
             sourcesCount: sourcesUsed.length,
-            articlesAggregated: allArticlesText.split('Source:').length - 1,
             lastArticleId: docRef.id,
             error: null
         }, { merge: true });
         
+        console.log("UK-EN: News Cron successfully completed.");
         return { success: true, data: JSON.parse(JSON.stringify(summaryResult)) };
     } catch (error: any) {
         console.error("UK-DIAGNOSTIC-FAILURE (Forensic Analysis):", error.message);
@@ -390,6 +398,78 @@ export async function addAmlAuditAction(caseId: string, actionObj: any) {
 
         return { success: true };
     } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Smart Priority Engine: Cross-Collection Forensic Gathering
+ * UK-EN Analysis of properties, AML cases, and suggestions.
+ */
+export async function getSmartPriorityList(userRole: string, organisationId?: string, branchIds?: string[]) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+        
+        let observations: string[] = [];
+
+        // 1. PROPERTY OBSERVATIONS (Missing Compliance)
+        let propQuery = firestore.collection('properties').limit(50);
+        if (organisationId) {
+            propQuery = propQuery.where('organisationId', '==', organisationId) as any;
+        }
+
+        const props = await propQuery.get();
+        props.docs.forEach(doc => {
+            const p = doc.data();
+            const address = p.address?.addressLine1 || 'Unknown Property';
+            
+            if (p.status === 'Published' && !p.compliance?.epcRating) {
+                observations.push(`Property at ${address} is 'Published' but missing an EPC rating. This violates marketing regulations.`);
+            }
+            if (p.status === 'Submitted' && (!p.legalPack || p.legalPack.length === 0)) {
+                observations.push(`Property at ${address} has been instructions to sell, but the Legal Pack is empty.`);
+            }
+            if (p.auctionType === 'Modern Method of Auction' && !p.reservePrice) {
+                observations.push(`Modern Method property at ${address} is pending reserve price agreement.`);
+            }
+        });
+
+        // 2. AML OBSERVATIONS
+        const amlCases = await firestore.collection('aml_cases')
+            .where('status', 'in', ['Pending', 'In Review'])
+            .limit(10)
+            .get();
+        
+        amlCases.docs.forEach(doc => {
+            const c = doc.data();
+            observations.push(`AML Case ${c.amlRef} (${c.subjectName}) is ${c.status} at ${c.riskRating} Risk. Urgent review required.`);
+        });
+
+        // 3. COMPLAINTS (Stage escalation)
+        const complaints = await firestore.collection('complaints')
+            .where('status', 'not-in', ['Closed', 'Ombudsman'])
+            .limit(5)
+            .get();
+        
+        complaints.docs.forEach(doc => {
+            const c = doc.data();
+            observations.push(`Active Complaint ${c.complaintRef} is currently at Stage ${c.stage}. Response due.`);
+        });
+
+        // REFINEMENT: If no observations, add a neutral "Steady pulse" observation.
+        if (observations.length === 0) {
+            observations.push("All property instructions and compliance checks are currently within standard operating parameters.");
+        }
+
+        const result = await priorityAnalysisFlow({
+            role: userRole,
+            observations
+        });
+
+        return { success: true, data: result };
+    } catch (error: any) {
+        console.error("Smart Priority Failure:", error.message);
         return { success: false, error: error.message };
     }
 }

@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import { useUser, useAuth } from "../../firebase";
 import { ImpersonationProvider } from "../../context/ImpersonationContext";
 import { PermissionProvider } from "../../context/PermissionContext";
+import { BrandProvider } from "../../context/BrandContext";
 import { Skeleton } from "../../components/ui/skeleton";
 import { AlertTriangle, LogOut } from "lucide-react";
 import { Button } from "../../components/ui/button";
@@ -75,7 +76,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <ImpersonationProvider>
       <PermissionProvider userProfile={userProfile!}>
-        <DashboardLayout>{children}</DashboardLayout>
+        <BrandProvider>
+          <DashboardLayout>{children}</DashboardLayout>
+        </BrandProvider>
       </PermissionProvider>
     </ImpersonationProvider>
   );

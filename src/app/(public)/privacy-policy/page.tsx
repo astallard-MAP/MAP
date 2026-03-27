@@ -122,8 +122,8 @@ export default function PrivacyPolicyPage() {
             <ul>
                 <li><strong>Service Delivery:</strong> To create accounts, process listings, facilitate communication, and provide support.</li>
                 <li><strong>Legal and Regulatory Compliance:</strong> To conduct AML checks, maintain records, and report to authorities as required.</li>
-                <li><strong>Security and Fraud Prevention:</strong> To detect and prevent fraud, protect the Portal, and investigate suspicious activities.</li>
-                <li><strong>Business Operations:</strong> To improve our services, analyze usage, and for internal reporting.</li>
+                <li><strong>Security and Fraud Prevention:</strong> To detect and prevent fraud, protect the Portal, and analyse usage, and investigate suspicious activities.</li>
+                <li><strong>Business Operations:</strong> To improve our services, analyse usage, and for internal reporting.</li>
             </ul>
 
             <h2>5. Data Sharing and Disclosure</h2>
@@ -148,7 +148,7 @@ export default function PrivacyPolicyPage() {
             <p>You have rights including access, rectification, erasure, restriction, portability, and the right to object or complain to the ICO. Some rights may be limited by our legal obligations (e.g., AML record keeping).</p>
 
             <h2>9. Security Measures</h2>
-            <p>We implement robust technical and organizational measures, including encryption, access controls, regular security testing, and staff training to protect your data.</p>
+            <p>We implement robust technical and organisational measures, including encryption, access controls, regular security testing, and staff training to protect your data.</p>
 
             <h2>10. Anti-Money Laundering (AML) Compliance</h2>
             <p>We are legally required to verify identity, maintain records for 5 years, and report suspicious activity to the National Crime Agency. You cannot object to this processing as it is a legal requirement.</p>

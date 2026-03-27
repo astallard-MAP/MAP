@@ -6,10 +6,12 @@ import { useUser, useDoc, useFirestore, useMemoFirebase } from "../firebase";
 import { Organisation } from "../lib/types";
 import PublicBrandLogo from "./PublicBrandLogo";
 import { doc } from "firebase/firestore";
+import { useBrand } from "../context/BrandContext";
 
 const OrganisationLogo = ({ className }: { className?: string }) => {
   const { userProfile } = useUser();
   const firestore = useFirestore();
+  const { brandingEnabled } = useBrand();
 
   const orgDocRef = useMemoFirebase(() => {
     if (!firestore || !userProfile?.organisationId) return null;
@@ -18,8 +20,13 @@ const OrganisationLogo = ({ className }: { className?: string }) => {
 
   const { data: organisation } = useDoc<Organisation>(orgDocRef);
   
-  // If user is TAD admin, show the official logo.
-  if (userProfile?.organisationId === 'tad_hq' || userProfile?.role === 'Global Admin' || userProfile?.role === 'TAD Admin') {
+  // LOGIC: If branding is DISABLED (White-Label toggle off) OR user is TAD/Admin, show official logo.
+  const showOfficial = !brandingEnabled || 
+                       userProfile?.organisationId === 'tad_hq' || 
+                       userProfile?.role === 'Global Admin' || 
+                       userProfile?.role === 'TAD Admin';
+
+  if (showOfficial) {
       const defaultAlt = "The Auction Department Logo";
       return (
          <div

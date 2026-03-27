@@ -63,7 +63,7 @@ export async function getFrankGameOfTheDay(suggestedType?: 'Franagram' | 'WordGr
 
 /**
  * Submits results for Frank's Game of the Day.
- * Standardizes ranking points and streak telemetry.
+ * Standardises ranking points and streak telemetry.
  */
 export async function submitFrankGameResult(params: {
     userId: string;

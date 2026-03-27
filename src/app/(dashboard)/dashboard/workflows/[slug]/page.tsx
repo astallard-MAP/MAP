@@ -7,7 +7,7 @@ import { ArrowLeft, FileText, ShieldCheck, History, BrainCircuit } from "lucide-
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-// Define the static params for build time optimization (SSG)
+// Define the static params for build time optimisation (SSG)
 export async function generateStaticParams() {
   return [
     { slug: 'aml-compliance' },

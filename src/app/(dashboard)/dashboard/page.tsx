@@ -55,6 +55,11 @@ import { OFFICIAL_AUCTION_DATES } from "../../../lib/constants";
 import { isAfter, format } from "date-fns";
 import { AnalogueClock } from "../../../components/AnalogueClock";
 import { FrankGameOfTheDayWidget } from "../../../components/FrankGameOfTheDayWidget";
+import { DashboardOwner } from "../../../components/dashboards/DashboardOwner";
+import { DashboardManager } from "../../../components/dashboards/DashboardManager";
+import { DashboardNegotiator } from "../../../components/dashboards/DashboardNegotiator";
+import { DashboardAdmin } from "../../../components/dashboards/DashboardAdmin";
+import { useBrand } from "../../../context/BrandContext";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",
@@ -336,6 +341,26 @@ export default function DashboardPage() {
 
   if (isLoading) return <div className="p-8 text-center"><Loader2 className="animate-spin inline mr-2" />Retrieving production stats...</div>;
 
+  const renderTailoredDashboard = () => {
+    if (!userProfile) return null;
+    const role = userProfile.role;
+
+    if (isAdmin || isAgencyOwner || role === 'Agency Owner') {
+      return <DashboardOwner userProfile={userProfile} />;
+    }
+    if (role === 'Regional Manager' || role === 'Area Manager' || role === 'Branch Manager') {
+      return <DashboardManager userProfile={userProfile} />;
+    }
+    if (role === 'Sales Manager' || role === 'Sales Negotiator') {
+      return <DashboardNegotiator userProfile={userProfile} />;
+    }
+    if (role === 'Auction Administrator') {
+      return <DashboardAdmin userProfile={userProfile} />;
+    }
+
+    return <DashboardNegotiator userProfile={userProfile} />; // Fallback for standard users
+  };
+
   return (
     <>
       {isAdmin && userProfile && (
@@ -344,172 +369,65 @@ export default function DashboardPage() {
             onOpenChange={setIsAddAgencyOpen}
           />
       )}
-      <div className="flex flex-col gap-8">
-        <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight font-headline text-slate-900">
-              Dashboard
-            </h1>
-            <p className="text-muted-foreground text-sm font-medium">
-              Production Intel for {userProfile?.firstName || 'User'}.
-            </p>
-          </div>
+      <div className="flex flex-col gap-8 pb-12">
+        <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 border-b pb-8 bg-white/50 p-6 rounded-2xl border border-slate-100 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-6">
-            <div className="flex flex-col items-end border-r pr-6 border-slate-200">
-                <div className="flex items-center gap-1.5 text-brand-primary">
-                    <Award className="h-4 w-4" />
-                    <span className="text-xl font-black tabular-nums tracking-tighter">{kpis.rankingPoints}</span>
+             <div className="h-20 w-20 rounded-2xl bg-brand-primary flex items-center justify-center text-white shadow-xl shadow-brand-primary/20 ring-4 ring-white">
+                {userOrg?.logoUrl ? (
+                    <img src={userOrg.logoUrl} alt="Logo" className="h-14 w-14 object-contain" />
+                ) : (
+                    <Building className="h-10 w-10 text-brand-secondary" />
+                )}
+             </div>
+             <div>
+                <h1 className="text-4xl font-black tracking-tighter font-headline text-slate-900 uppercase">
+                  Mission Control
+                </h1>
+                <p className="text-muted-foreground text-sm font-medium italic">
+                  Production Intel for {userProfile?.firstName} • {userProfile?.role} @ {userOrg?.name || 'TAD Network'}.
+                </p>
+             </div>
+          </div>
+          <div className="flex items-center gap-8">
+            <div className="flex flex-col items-end border-r pr-8 border-slate-200">
+                <div className="flex items-center gap-2 text-brand-primary">
+                    <Award className="h-5 w-5" />
+                    <span className="text-3xl font-black tabular-nums tracking-tighter">{kpis.rankingPoints}</span>
                 </div>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Portal Ranking</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Portal Ranking</span>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden lg:block scale-75 origin-right">
                 <AnalogueClock />
             </div>
           </div>
         </header>
 
-        {/* DEFINITIVE PERFORMANCE KPI ROW */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-            <Card className="border-l-4 border-l-brand-primary shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Auctions Held</CardTitle>
-                    <Gavel className="h-4 w-4 text-brand-primary" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-black text-slate-900">{kpis.auctionsHeld}</div>
-                    <p className="text-[9px] text-muted-foreground font-medium mt-1 uppercase">Definitive record</p>
-                </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-purple-500 shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Properties Listed</CardTitle>
-                    <Building className="h-4 w-4 text-purple-500" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-black text-slate-900">{kpis.propertiesListed}</div>
-                    <p className="text-[9px] text-muted-foreground font-medium mt-1 uppercase">Master inventory</p>
-                </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-green-500 shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Properties Sold</CardTitle>
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-black text-slate-900">{kpis.propertiesSold}</div>
-                    <p className="text-[9px] text-muted-foreground font-medium mt-1 uppercase">Successful completions</p>
-                </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-brand-secondary shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Success Rate</CardTitle>
-                    <TrendingUp className="h-4 w-4 text-brand-secondary" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-black text-slate-900">{kpis.successRate}%</div>
-                    <p className="text-[9px] text-muted-foreground font-medium mt-1 uppercase">Conversion metric</p>
-                </CardContent>
-            </Card>
-            <Card className="border-l-4 border-l-blue-500 shadow-sm bg-white hover:shadow-md transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Total Raised</CardTitle>
-                    <Award className="h-4 w-4 text-blue-500" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-lg font-black text-slate-900 tabular-nums">{kpis.totalRaised}</div>
-                    <p className="text-[9px] text-muted-foreground font-medium mt-1 uppercase">Capital audit</p>
-                </CardContent>
-            </Card>
+        {/* ROLE-SPECIFIC DASHBOARD INJECTION */}
+        {renderTailoredDashboard()}
+
+        {/* SHARED INTELLIGENCE FOOTER (Gamification & News) */}
+        <div className="grid gap-8 lg:grid-cols-3 pt-8 border-t border-slate-100">
+           <div className="lg:col-span-2">
+              <FrankGameOfTheDayWidget />
+           </div>
+           <AuctionNews latestOnly={true} />
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
-            <Button asChild className="h-9 text-xs font-bold shadow-md">
-                <Link href="/dashboard/submit-property">
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add a Property
-                </Link>
-            </Button>
-            
-            {isAdmin && (
-              <>
-                <Button variant="outline" onClick={() => setIsAddAgencyOpen(true)} className="h-9 text-xs font-bold border-2 border-slate-200">
-                  <Building className="mr-2 h-4 w-4 text-primary" /> Add an Agency
-                </Button>
-                <Button asChild variant="outline" className="h-9 text-xs font-bold border-2 border-slate-200">
-                  <Link href="/dashboard/review-properties?status=Submitted">
-                     <UserCheck className="mr-2 h-4 w-4 text-primary" /> Review Submissions
-                  </Link>
-                </Button>
-              </>
-            )}
-            
-            <Badge variant="outline" className="h-9 px-4 border-2 border-brand-secondary/20 flex items-center gap-2">
-                <Bookmark className="h-3.5 w-3.5 text-brand-secondary" />
-                <span className="text-[10px] font-bold uppercase tracking-tight">Next Official: {nextOfficialAuction ? format(new Date(nextOfficialAuction.date), 'dd/MM/yyyy') : 'TBC'}</span>
-            </Badge>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          <TasksCard tasks={tasks} />
-          <FrankGameOfTheDayWidget />
-          <AuctionNews latestOnly={true} />
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-                <Card className="h-full border-l-4 border-l-primary shadow-sm">
-                    <CardHeader className="pb-3 border-b bg-muted/5">
-                        <CardTitle className="text-sm font-bold uppercase tracking-widest flex items-center">
-                            <TrendingUp className="mr-2 h-4 w-4 text-primary"/> Recently Approved Lots
-                        </CardTitle>
-                        <CardDescription className="text-[10px]">Approved for production in the last 30 days.</CardDescription>
+        {/* SYSTEM TOOLS (Admin Only) */}
+        {isAdmin && (
+            <div className="grid gap-6 lg:grid-cols-3 mt-8">
+                <AdminToolsCard />
+                <SuggestionBox />
+                <Card className="shadow-sm border border-slate-200 bg-slate-50 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed">
+                    <CardHeader className="pb-3 border-b">
+                        <CardTitle className="text-sm font-bold uppercase flex items-center"><History className="mr-2 h-4 w-4" /> System Audit Logs</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0">
-                        <Table>
-                            <TableHeader>
-                            <TableRow className="hover:bg-transparent">
-                                <TableHead className="text-[10px] font-bold uppercase">Address</TableHead>
-                                <TableHead className="text-[10px] font-bold uppercase">Status</TableHead>
-                                <TableHead className="text-right text-[10px] font-bold uppercase">Audit</TableHead>
-                            </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                            {recentSubmissions && recentSubmissions.length > 0 ? (
-                                recentSubmissions.map(property => (
-                                    <TableRow key={property.id} className="group transition-colors">
-                                        <TableCell className="font-bold text-[11px] py-3 text-slate-900">
-                                            {property.address?.addressLine1 || 'Unknown Address'}
-                                            {property.address?.postcode ? `, ${property.address.postcode}` : ''}
-                                        </TableCell>
-                                        <TableCell className="py-3">
-                                            <Badge variant={statusVariantMap[property.status] || 'secondary'} className="text-[9px] px-1.5 h-4 font-bold border-none">{property.status}</Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right py-3">
-                                            <Button variant="ghost" size="icon" asChild className="h-7 w-7 group-hover:bg-brand-primary group-hover:text-white transition-all">
-                                                <Link href={`/dashboard/properties/${property.id}`}>
-                                                    <Eye className="h-3 w-3" />
-                                                </Link>
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={3} className="h-24 text-center text-xs text-muted-foreground italic">
-                                        No recently approved properties.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                            </TableBody>
-                        </Table>
+                    <CardContent className="pt-4 px-8 text-center py-12">
+                        <p className="text-xs font-bold text-slate-400">Restricted to Root Administrator</p>
                     </CardContent>
                 </Card>
             </div>
-            
-            <div className="space-y-6">
-                <SuggestionBox />
-                {isAdmin && <AdminToolsCard />}
-            </div>
-        </div>
+        )}
       </div>
     </>
   )

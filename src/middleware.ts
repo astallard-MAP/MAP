@@ -12,7 +12,7 @@ export const config = {
      * Match all request paths except for the ones starting with:
      * - api (API routes)
      * - _next/static (static files)
-     * - _next/image (image optimization files)
+     * - _next/image (image optimisation files)
      * - favicon.ico (favicon file)
      * - .png (image files)
      * - .svg (svg files)

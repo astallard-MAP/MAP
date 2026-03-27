@@ -103,7 +103,7 @@ export default function SuggestionsPage() {
             <Button variant="outline" size="icon" onClick={() => router.back()}><ArrowLeft /></Button>
             <div>
                 <h1 className="text-3xl font-bold tracking-tight font-headline text-slate-900">User Suggestions</h1>
-                <p className="text-muted-foreground font-medium">Review, prioritize, and manage user feedback.</p>
+                <p className="text-muted-foreground font-medium">Review, prioritise, and manage user feedback.</p>
             </div>
         </header>
         <Card>
