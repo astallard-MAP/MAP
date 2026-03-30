@@ -413,9 +413,18 @@ export async function getSmartPriorityList(userRole: string, organisationId?: st
         
         let observations: string[] = [];
 
+        const isTadStaff = [
+            'Global Admin',
+            'TAD Admin',
+            'Regional Manager',
+            'Area Manager',
+            'Sales Manager',
+            'Auction Administrator'
+        ].includes(userRole);
+
         // 1. PROPERTY OBSERVATIONS (Missing Compliance)
         let propQuery = firestore.collection('properties').limit(50);
-        if (organisationId) {
+        if (organisationId && !isTadStaff) {
             propQuery = propQuery.where('organisationId', '==', organisationId) as any;
         }
 
@@ -436,10 +445,14 @@ export async function getSmartPriorityList(userRole: string, organisationId?: st
         });
 
         // 2. AML OBSERVATIONS
-        const amlCases = await firestore.collection('aml_cases')
-            .where('status', 'in', ['Pending', 'In Review'])
-            .limit(10)
-            .get();
+        let amlQuery = firestore.collection('aml_cases')
+            .where('status', 'in', ['Pending', 'In Review']);
+        
+        if (organisationId && !isTadStaff) {
+            amlQuery = amlQuery.where('organisationId', '==', organisationId);
+        }
+
+        const amlCases = await amlQuery.limit(10).get();
         
         amlCases.docs.forEach(doc => {
             const c = doc.data();
@@ -447,10 +460,14 @@ export async function getSmartPriorityList(userRole: string, organisationId?: st
         });
 
         // 3. COMPLAINTS (Stage escalation)
-        const complaints = await firestore.collection('complaints')
-            .where('status', 'not-in', ['Closed', 'Ombudsman'])
-            .limit(5)
-            .get();
+        let complaintQuery = firestore.collection('complaints')
+            .where('status', 'not-in', ['Closed', 'Ombudsman']);
+
+        if (organisationId && !isTadStaff) {
+            complaintQuery = complaintQuery.where('organisationId', '==', organisationId);
+        }
+
+        const complaints = await complaintQuery.limit(5).get();
         
         complaints.docs.forEach(doc => {
             const c = doc.data();

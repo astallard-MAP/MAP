@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { doc } from "firebase/firestore";
 import { useToast } from "../../../../../hooks/use-toast";
 import { publishToRightmove, publishToZoopla, publishToOTM } from "../../../../../app/actions/portal-actions";
+import { usePermissions } from "../../../../../context/PermissionContext";
 
 const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" } = {
     Draft: "secondary",
@@ -42,6 +43,7 @@ export default function PropertyDetailPage() {
     const router = useRouter();
     const { userProfile } = useUser();
     const firestore = useFirestore();
+    const { isTadStaff } = usePermissions();
     const { toast } = useToast();
     const [isPublishing, setIsPublishing] = useState<string | null>(null);
 
@@ -52,7 +54,6 @@ export default function PropertyDetailPage() {
 
     const { data: property, isLoading } = useDoc<Property>(propertyRef);
 
-    const isAdmin = userProfile?.role === 'Global Admin' || userProfile?.role === 'TAD Admin';
 
     const handlePublish = async (portal: 'rightmove' | 'zoopla' | 'otm') => {
       if (!id) return;
@@ -101,7 +102,7 @@ export default function PropertyDetailPage() {
                 </div>
             </header>
 
-            {isAdmin && (
+            {isTadStaff && (
               <Card className="border-l-4 border-l-secondary bg-secondary/5 shadow-md">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-secondary">

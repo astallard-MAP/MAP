@@ -51,14 +51,14 @@ const emptyAddress: Address = {
  */
 export default function OrganisationPage() {
   const { userProfile, isLoading: isUserLoading } = useUser();
-  const { isAdmin, isAgencyOwner, isManager, isPermissionsLoaded } = usePermissions();
+  const { isTadStaff, isAgencyOwner, isManager, isPermissionsLoaded } = usePermissions();
   const firestore = useFirestore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const orgIdFromUrl = searchParams.get('orgId');
-  const organisationId = (isAdmin && orgIdFromUrl) ? orgIdFromUrl : userProfile?.organisationId;
+  const organisationId = (isTadStaff && orgIdFromUrl) ? orgIdFromUrl : userProfile?.organisationId;
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || "profile");
 
@@ -324,7 +324,7 @@ export default function OrganisationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Branch Offices</CardTitle>
-                {(isAdmin || isAgencyOwner) && <Button onClick={() => setAddingBranch(true)}><Building className="mr-2 h-4 w-4" />Add Branch</Button>}
+                {(isTadStaff || isAgencyOwner) && <Button onClick={() => setAddingBranch(true)}><Building className="mr-2 h-4 w-4" />Add Branch</Button>}
               </CardHeader>
               <CardContent>
                 <Table>
@@ -343,7 +343,7 @@ export default function OrganisationPage() {
                         <TableCell>{b.address.townCity}</TableCell>
                         <TableCell><Badge variant={b.status === 'active' ? 'default' : 'secondary'}>{b.status}</Badge></TableCell>
                         <TableCell className="text-right">
-                          {(isAdmin || isAgencyOwner) && b.id !== 'head-office' && (
+                          {(isTadStaff || isAgencyOwner) && b.id !== 'head-office' && (
                             <Button variant="ghost" size="icon" onClick={() => setEditingBranch(b)}><Pencil className="h-4 w-4"/></Button>
                           )}
                         </TableCell>
@@ -359,7 +359,7 @@ export default function OrganisationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Staff Management</CardTitle>
-                {(isAdmin || isManager) && <Button onClick={() => setInvitingUser(true)}><UserPlus className="mr-2 h-4 w-4"/>Invite Staff</Button>}
+                {(isTadStaff || isManager) && <Button onClick={() => setInvitingUser(true)}><UserPlus className="mr-2 h-4 w-4"/>Invite Staff</Button>}
               </CardHeader>
               <CardContent>
                 <Table>
@@ -378,7 +378,7 @@ export default function OrganisationPage() {
                         <TableCell>{m.role}</TableCell>
                         <TableCell><Badge>{m.status}</Badge></TableCell>
                         <TableCell className="text-right space-x-1">
-                          {(isAdmin || isManager) && userProfile && (
+                          {(isTadStaff || isManager) && userProfile && (
                             <Fragment>
                               <Button variant="ghost" size="icon" onClick={() => setEditingUser(m)}><Pencil className="h-4 w-4"/></Button>
                               {userProfile?.uid !== m.uid && <Button variant="ghost" size="icon" onClick={() => setDeletingUser(m)}><Trash2 className="h-4 w-4 text-destructive"/></Button>}

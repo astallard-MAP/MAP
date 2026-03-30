@@ -19,6 +19,7 @@ interface PermissionContextType {
   isBranchManager: boolean;
   isOfficeAdmin: boolean;
   isManager: boolean;
+  isTadStaff: boolean;
   canManageRole: (targetRole: UserRole) => boolean;
   isPermissionsLoaded: boolean;
 }
@@ -71,6 +72,15 @@ export function PermissionProvider({ children, userProfile }: { children: ReactN
     const isOfficeAdmin = effectiveRole === 'Office Administrator';
     const isManager = isAgencyOwner || isAgencyRegionalManager || isBranchManager || isOfficeAdmin || isTadManager;
 
+    const isTadStaff = [
+        'Global Admin',
+        'TAD Admin',
+        'Regional Manager',
+        'Area Manager',
+        'Sales Manager',
+        'Auction Administrator'
+    ].includes(effectiveRole);
+
     const canManageRole = (targetRole: UserRole): boolean => {
         if (isGlobalAdmin && !impersonatedRole) return true;
         const manageable = canManageRoleMap[userProfile.role] || [];
@@ -91,6 +101,7 @@ export function PermissionProvider({ children, userProfile }: { children: ReactN
       isBranchManager,
       isOfficeAdmin,
       isManager,
+      isTadStaff,
       canManageRole,
       isPermissionsLoaded: true,
     };

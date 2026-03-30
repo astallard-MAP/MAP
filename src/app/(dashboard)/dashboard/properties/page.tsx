@@ -41,7 +41,7 @@ const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive"
 
 export default function PropertiesPage() {
     const { user, userProfile, isProfileLoaded } = useUser();
-    const { isAdmin, isBranchManager, isOfficeAdmin } = usePermissions();
+    const { isAdmin, isBranchManager, isOfficeAdmin, isTadStaff } = usePermissions();
     const firestore = useFirestore();
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -51,7 +51,7 @@ export default function PropertiesPage() {
         if (!isProfileLoaded || !userProfile || !firestore) return null;
         
         const constraints = [];
-        if (!isAdmin) {
+        if (!isTadStaff) {
             if (userProfile.organisationId) {
                 constraints.push(where("organisationId", "==", userProfile.organisationId));
                 if ((isBranchManager || isOfficeAdmin || userProfile.role === 'Sales Negotiator') && userProfile.branchIds?.length > 0) {
@@ -63,7 +63,7 @@ export default function PropertiesPage() {
         }
         
         return query(collection(firestore, 'properties'), ...constraints);
-    }, [isProfileLoaded, userProfile, isAdmin, isBranchManager, isOfficeAdmin, firestore]);
+    }, [isProfileLoaded, userProfile, isTadStaff, isBranchManager, isOfficeAdmin, firestore]);
     
     const { data: properties, isLoading: propertiesLoading } = useCollection<Property>(propertiesQuery);
 

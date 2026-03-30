@@ -49,7 +49,7 @@ type FilterStatus = "All" | "Submitted" | "Published" | "Available";
 
 export default function ReviewPropertiesPage() {
     const { userProfile, loading: userLoading } = useUser();
-    const { isAdmin } = usePermissions();
+    const { isTadStaff } = usePermissions();
     const firestore = useFirestore();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -64,14 +64,14 @@ export default function ReviewPropertiesPage() {
     const [orgFilter, setOrgFilter] = useState<string>("all");
 
     const orgsQuery = useMemoFirebase(() => {
-        if (!firestore || !isAdmin) return null;
+        if (!firestore || !isTadStaff) return null;
         return collection(firestore, 'organisations');
-    }, [firestore, isAdmin]);
+    }, [firestore, isTadStaff]);
 
     const { data: organisations, isLoading: orgsLoading } = useCollection<Organisation>(orgsQuery);
 
     const propertiesQuery = useMemoFirebase(() => {
-        if (!firestore || !isAdmin) return null;
+        if (!firestore || !isTadStaff) return null;
         let constraints = [];
         if (statusFilter !== "All") {
             constraints.push(where("status", "==", statusFilter));
@@ -80,15 +80,15 @@ export default function ReviewPropertiesPage() {
             constraints.push(where("organisationId", "==", orgFilter));
         }
         return query(collection(firestore, 'properties'), ...constraints);
-    }, [firestore, isAdmin, statusFilter, orgFilter]);
+    }, [firestore, isTadStaff, statusFilter, orgFilter]);
     
     const { data: properties, isLoading: propsLoading } = useCollection<Property>(propertiesQuery);
 
     useEffect(() => {
-        if (!userLoading && !isAdmin) {
+        if (!userLoading && !isTadStaff) {
             router.push('/dashboard');
         }
-    }, [userProfile, userLoading, isAdmin, router]);
+    }, [userProfile, userLoading, isTadStaff, router]);
     
     useEffect(() => {
         const newUrl = statusFilter === 'All' 
@@ -106,11 +106,11 @@ export default function ReviewPropertiesPage() {
         }, {} as Record<string, string>);
     }, [organisations]);
 
-    if (userLoading || (isAdmin && (propsLoading || orgsLoading))) {
+    if (userLoading || (isTadStaff && (propsLoading || orgsLoading))) {
         return <div className="p-8 text-center">Loading audit data...</div>
     }
 
-    if (!isAdmin) {
+    if (!isTadStaff) {
         return null;
     }
 

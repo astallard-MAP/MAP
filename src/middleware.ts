@@ -27,7 +27,13 @@ export function middleware(request: NextRequest) {
   const sessionCookie = cookieStore.get('__session');
 
   // DMZ: Public facing pages accessible without authentication.
-  const publicPaths = ['/login', '/signup', '/forgot-password', '/privacy-policy'];
+  const publicPaths = [
+    '/login', 
+    '/signup', 
+    '/forgot-password', 
+    '/privacy-policy',
+    '/api/cron/summarise-news' // Explicit exclusion for Cloud Scheduler
+  ];
 
   // Forensic check for public ingress (including hardcoded asset bypasses).
   const isPublicPath = 

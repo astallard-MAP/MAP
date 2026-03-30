@@ -12,7 +12,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
-    // Audit Check: Log invocation for cloud logs
+    // UK-EN: Verify Authorization Header exists (OIDC Token from App Hosting)
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader && process.env.NODE_ENV === 'production') {
+      console.error("UK-EN: Unauthorized Cron Attempt - Missing Token");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     console.log("UK-EN: Cron News Summarisation triggered at", new Date().toISOString());
 
     const result = await summariseAndSaveNews();
@@ -20,8 +26,7 @@ export async function GET(request: Request) {
     if (result.success) {
       return NextResponse.json({ 
         success: true, 
-        message: "Production intelligence report published.",
-        timestamp: new Date().toISOString() 
+        message: "Intelligence published." 
       });
     } else {
       console.error("UK-EN: News Summarisation Action Failed:", result.error);
