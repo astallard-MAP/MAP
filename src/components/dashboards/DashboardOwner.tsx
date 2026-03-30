@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Switch } from "../ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import Link from "next/link";
 import { 
   TrendingUp, 
   PoundSterling, 
@@ -19,12 +20,19 @@ import {
   PieChart,
   Gavel,
   CheckCircle2,
-  Award
+  Award,
+  PlusCircle,
+  UserPlus2,
+  GraduationCap,
+  Wrench,
+  Building
 } from "lucide-react";
+import { usePermissions } from "../../context/PermissionContext";
 import { type UserProfile } from "../../lib/types";
 
 export function DashboardOwner({ userProfile }: { userProfile: UserProfile }) {
   const { brandingEnabled, setBrandingEnabled, organisation } = useBrand();
+  const { isAdmin } = usePermissions();
 
   return (
     <div className="flex flex-col gap-8">
@@ -81,6 +89,53 @@ export function DashboardOwner({ userProfile }: { userProfile: UserProfile }) {
             </CardTitle>
           </CardHeader>
         </Card>
+      </div>
+
+      {/* QUICK PRODUCTION ACTIONS */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-50">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center">
+                 <PlusCircle className="mr-2 h-3 w-3 text-brand-primary" /> Production Shortcuts
+              </h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <Link href="/dashboard/submit-property" className="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-brand-primary/5 hover:border-brand-primary/20 transition-all group gap-2">
+                  <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <PlusCircle className="h-5 w-5 text-brand-primary" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tight text-slate-600 group-hover:text-brand-primary">Submit New Lot</span>
+              </Link>
+              
+              <Link href="/dashboard/organisation" className="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-emerald-50 hover:border-emerald-200 transition-all group gap-2">
+                  <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Building className="h-5 w-5 text-emerald-600" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tight text-slate-600 group-hover:text-emerald-700">Add New Branch</span>
+              </Link>
+
+              <Link href="/dashboard/users" className="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-blue-50 hover:border-blue-200 transition-all group gap-2">
+                  <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <UserPlus2 className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tight text-slate-600 group-hover:text-blue-700">Invite Staff</span>
+              </Link>
+
+              <Link href="/dashboard/auction-academy" className="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-purple-50 hover:border-purple-200 transition-all group gap-2">
+                  <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <GraduationCap className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-tight text-slate-600 group-hover:text-purple-700">Auction Academy</span>
+              </Link>
+
+              {isAdmin && (
+                  <Link href="/dashboard/admin-tools" className="flex flex-col items-center justify-center p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-amber-50 hover:border-amber-200 transition-all group gap-2">
+                      <div className="h-10 w-10 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Wrench className="h-5 w-5 text-amber-600" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-tight text-slate-600 group-hover:text-amber-700">Admin Tools</span>
+                  </Link>
+              )}
+          </div>
       </div>
 
       {/* MAIN INTELLIGENCE GRID */}
