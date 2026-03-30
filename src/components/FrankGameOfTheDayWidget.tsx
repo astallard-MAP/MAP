@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { 
     getFrankGameOfTheDay, 
-    submitFrankGameResult, 
-    getFrankLeaderboard 
+    getFrankLeaderboard,
+    getFrankUserGameProgress,
+    updateFrankGameProgress 
 } from "@/app/actions/game-actions";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +49,7 @@ export function FrankGameOfTheDayWidget() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  // Load Game of the Day
+  // Load Game of the Day & User Progress
   useEffect(() => {
     async function load() {
       const res = await getFrankGameOfTheDay();
@@ -60,11 +61,34 @@ export function FrankGameOfTheDayWidget() {
                 .sort(() => Math.random() - 0.5);
             setScrambledPool(letters);
         }
+
+        // Check for existing progress
+        if (userProfile) {
+            const prog = await getFrankUserGameProgress(userProfile.uid, res.data.date);
+            if (prog.success && prog.data) {
+                const data = prog.data;
+                if (data.status === 'in-progress' || data.status === 'completed') {
+                    setIsRevealed(true);
+                    setAttempts(data.attempts || 0);
+                    setCurrentTime(data.timeTakenMs || 0);
+                    
+                    if (data.status === 'completed') {
+                        setSolved(true);
+                        setIsCorrect(data.isCorrect ?? true);
+                        const leaderRes = await getFrankLeaderboard(res.data.date);
+                        if (leaderRes.success) setLeaderboard(leaderRes.data);
+                    } else {
+                        // Resume timer if not completed
+                        setStartTime(Date.now() - (data.timeTakenMs || 0));
+                    }
+                }
+            }
+        }
       }
       setLoading(false);
     }
     load();
-  }, []);
+  }, [userProfile]); // Reload if user info becomes available
 
   // Timer Effect
   useEffect(() => {
@@ -77,9 +101,22 @@ export function FrankGameOfTheDayWidget() {
     return () => clearInterval(interval);
   }, [isRevealed, solved, startTime, game]);
 
-  const handleReveal = () => {
+  const handleReveal = async () => {
     setIsRevealed(true);
-    setStartTime(Date.now());
+    const now = Date.now();
+    setStartTime(now);
+    
+    if (userProfile && game) {
+        await updateFrankGameProgress({
+            userId: userProfile.uid,
+            userName: userProfile.displayName,
+            gameId: game.date,
+            type: game.type,
+            status: 'in-progress',
+            attempts: 0,
+            timeMs: 0
+        });
+    }
   };
 
   const handleCheckPuzzle = async () => {
@@ -108,19 +145,24 @@ export function FrankGameOfTheDayWidget() {
         correct = isWordSquare && sortedInput === sortedSolution;
     }
 
+    const duration = Date.now() - (startTime || Date.now());
+    const finalAttempts = attempts + 1;
+    setAttempts(finalAttempts);
+    setCurrentTime(duration);
+
     if (correct) {
-      const duration = Date.now() - (startTime || Date.now());
       setSolved(true);
       setIsSubmitting(true);
       
       if (userProfile) {
-        await submitFrankGameResult({
+        await updateFrankGameProgress({
             userId: userProfile.uid,
             userName: userProfile.displayName,
             gameId: game.date,
             type: game.type,
+            status: 'completed',
             timeMs: duration,
-            attempts: attempts + 1
+            attempts: finalAttempts
         });
       }
       
@@ -130,6 +172,18 @@ export function FrankGameOfTheDayWidget() {
       toast({ title: "Spot on, partner!", description: `Solved in ${(duration/1000).toFixed(3)}s!` });
       setIsSubmitting(false);
     } else {
+      // Sync failed attempt to Firestore
+      if (userProfile) {
+        await updateFrankGameProgress({
+            userId: userProfile.uid,
+            userName: userProfile.displayName,
+            gameId: game.date,
+            type: game.type,
+            status: 'in-progress',
+            timeMs: duration,
+            attempts: finalAttempts
+        });
+      }
       toast({ variant: "destructive", title: "Not quite!", description: "Frank says: Check your spelling and try again." });
     }
   };
@@ -143,12 +197,14 @@ export function FrankGameOfTheDayWidget() {
     setSolved(true);
 
     if (userProfile) {
-        await submitFrankGameResult({
+        await updateFrankGameProgress({
             userId: userProfile.uid,
             userName: userProfile.displayName,
             gameId: game.date,
             type: 'Quiz',
-            isCorrect: correct
+            status: 'completed',
+            isCorrect: correct,
+            attempts: attempts + 1
         });
     }
 

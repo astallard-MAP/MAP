@@ -62,14 +62,32 @@ export async function getFrankGameOfTheDay(suggestedType?: 'Franagram' | 'WordGr
 }
 
 /**
- * Submits results for Frank's Game of the Day.
- * Standardises ranking points and streak telemetry.
+ * Retrieves the current user's progress for a specific game.
  */
-export async function submitFrankGameResult(params: {
+export async function getFrankUserGameProgress(userId: string, gameId: string) {
+    try {
+        const app = await initializeAdminApp();
+        const firestore = getFirestore(app);
+
+        const progressDoc = await firestore.collection('frankGameResults').doc(`${userId}_${gameId}`).get();
+        if (progressDoc.exists) {
+            return { success: true, data: JSON.parse(JSON.stringify(progressDoc.data())) };
+        }
+        return { success: true, data: null };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+/**
+ * Updates or initializes game progress for a user (e.g. on Reveal or Attempt).
+ */
+export async function updateFrankGameProgress(params: {
     userId: string;
     userName: string;
     gameId: string;
     type: 'Franagram' | 'WordGrid' | 'Quiz';
+    status: 'in-progress' | 'completed';
     timeMs?: number;
     attempts?: number;
     isCorrect?: boolean;
@@ -77,35 +95,49 @@ export async function submitFrankGameResult(params: {
     try {
         const app = await initializeAdminApp();
         const firestore = getFirestore(app);
-        const { userId, userName, gameId, type, timeMs, attempts, isCorrect } = params;
+        const { userId, userName, gameId, type, status, timeMs, attempts, isCorrect } = params;
 
         const resultRef = firestore.collection('frankGameResults').doc(`${userId}_${gameId}`);
-        await resultRef.set({
+        
+        const payload: any = {
             userId,
             userName,
             gameId,
             type,
-            timeTakenMs: timeMs || 0,
-            attempts: attempts || 1,
-            isCorrect: isCorrect ?? true, // For puzzles, correctness is implied by submission
-            submittedAt: FieldValue.serverTimestamp(),
-        });
-
-        // Reward logic
-        const userRef = firestore.collection('users').doc(userId);
-        const points = type === 'Quiz' ? 15 : 10;
-
-        await userRef.update({
-            rankingPoints: FieldValue.increment(points),
-            lastGameDate: gameId,
+            status,
             updatedAt: FieldValue.serverTimestamp(),
-        });
+        };
 
-        return { success: true, points };
+        if (timeMs !== undefined) payload.timeTakenMs = timeMs;
+        if (attempts !== undefined) payload.attempts = attempts;
+        if (isCorrect !== undefined) payload.isCorrect = isCorrect;
+        
+        // Only set submittedAt if completing
+        if (status === 'completed') {
+            payload.submittedAt = FieldValue.serverTimestamp();
+            
+            // Reward logic
+            const userRef = firestore.collection('users').doc(userId);
+            const points = type === 'Quiz' ? 15 : 10;
+
+            await userRef.update({
+                rankingPoints: FieldValue.increment(points),
+                lastGameDate: gameId,
+                updatedAt: FieldValue.serverTimestamp(),
+            });
+        } else {
+            // If it doesn't exist, initialize it
+            payload.createdAt = FieldValue.serverTimestamp();
+        }
+
+        await resultRef.set(payload, { merge: true });
+
+        return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };
     }
 }
+
 
 /**
  * Retrieves the daily leaderboard for Frank's Game.
